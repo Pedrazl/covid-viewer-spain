@@ -24,5 +24,3 @@ yarn-error.log*
 *.sw?
 src/data/data_samples.xlsx
 src/data/~$data_samples.xlsx
-src/data/data_samples.xlsx
-src/data/data_samples.xlsx
