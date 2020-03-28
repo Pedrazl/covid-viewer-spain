@@ -3,15 +3,16 @@
 </template>
 <script>
 import L from "leaflet";
-import HeatmapOverlay from "leaflet-heatmap";
+import axios from "axios";
+import { CCAA_DATA } from "@/config/ccaa.js";
 export default {
+  
   data() {
-    return {
-      map: {}
-    };
+    return { map: {} };
   },
   mounted() {
     this.init();
+    this.loadCovidLayers();
   },
   methods: {
     init() {
@@ -26,43 +27,32 @@ export default {
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
-      //this.loadHeatLayer();
       this.loadCovidLayers();
     },
-    loadCovidLayers(){
-      L.circle([39.5, -3.4], {radius: 100000}).addTo(this.map);
+    loadCovidLayers() {
+      this.getLatestData();
+      CCAA_DATA.forEach(ccaa => {
+        L.circle([ccaa.coords.lon, ccaa.coords.lat], { radius: 100000 }).addTo(
+          this.map
+        );
+      });
     },
-    loadHeatLayer() {
-      var testData = {
-        max: 8,
-        data: [
-          { lat: 24.6408, lng: 46.7728, count: 3 },
-          { lat: 50.75, lng: -1.55, count: 1 }
-        ]
+    getLatestData() {
+      const _basicHeaders = {
+        "Content-Type": "text/csv",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS"
       };
+      const proxyurl = "https://cors-anywhere.herokuapp.com/";
+      const url = "https://covid19.isciii.es/resources/ccaa.csv";
 
-      var cfg = {
-        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        // if scaleRadius is false it will be the constant radius used in pixels
-        radius: 2,
-        maxOpacity: 0.8,
-        // scales the radius based on map zoom
-        scaleRadius: true,
-        // if set to false the heatmap uses the global maximum for colorization
-        // if activated: uses the data maximum within the current map boundaries
-        //   (there will always be a red spot with useLocalExtremas true)
-        useLocalExtrema: true,
-        // which field name in your data represents the latitude - default "lat"
-        latField: "lat",
-        // which field name in your data represents the longitude - default "lng"
-        lngField: "lng",
-        // which field name in your data represents the data value - default "value"
-        valueField: "count"
-      };
-
-      var heatmapLayer = new HeatmapOverlay(cfg);
-      heatmapLayer.setData(testData);
-      heatmapLayer.addTo(this.map);
+      axios
+        .get(proxyurl + url, {
+          headers: _basicHeaders
+        })
+        .then(response => {
+          console.log(response);
+        });
     }
   }
 };
