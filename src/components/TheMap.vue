@@ -4,9 +4,9 @@
 <script>
 import L from "leaflet";
 import axios from "axios";
+import Papa from "papaparse";
 import { CCAA_DATA } from "@/config/ccaa.js";
 export default {
-  
   data() {
     return { map: {} };
   },
@@ -51,7 +51,12 @@ export default {
           headers: _basicHeaders
         })
         .then(response => {
-          console.log(response);
+          var ccaaMarkers;
+          var data = Papa.parse(response.data, { header: true });
+          data.forEach(row => {
+            const ccaa = CCAA_DATA.find(element => element.name === row[0]);
+          });
+          console.log(data);
         });
     }
   }
