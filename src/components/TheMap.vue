@@ -3,12 +3,22 @@
 </template>
 <script>
 import L from "leaflet";
-import axios from "axios";
 import Papa from "papaparse";
 import { CCAA_DATA } from "@/config/ccaa.js";
+import { getCases } from "@/api/datadista.js";
+
 export default {
   data() {
-    return { map: {} };
+    return {
+      map: {},
+      cases: [],
+      ccaaMarkers: []
+    };
+  },
+  computed: {
+    today: function() {
+      return new Date().toLocaleDateString();
+    }
   },
   mounted() {
     this.init();
@@ -17,6 +27,10 @@ export default {
   methods: {
     init() {
       this.map = L.map("map").setView([40.505, -3.09], 6);
+      this.addBaseMap();
+      this.loadCovidLayers();
+    },
+    addBaseMap(){
       var CartoDB_DarkMatter = L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -27,37 +41,44 @@ export default {
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
-      this.loadCovidLayers();
     },
-    loadCovidLayers() {
-      this.getLatestData();
-      CCAA_DATA.forEach(ccaa => {
-        L.circle([ccaa.coords.lon, ccaa.coords.lat], { radius: 100000 }).addTo(
-          this.map
-        );
-      });
-    },
-    getLatestData() {
-      const _basicHeaders = {
-        "Content-Type": "text/csv",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS"
-      };
-      const proxyurl = "https://cors-anywhere.herokuapp.com/";
-      const url = "https://covid19.isciii.es/resources/ccaa.csv";
+    async loadCovidLayers() {
+      /* Cases layer */
+      var rawData = await getCases();
+      this.extractData(rawData);
 
-      axios
-        .get(proxyurl + url, {
-          headers: _basicHeaders
-        })
-        .then(response => {
-          var ccaaMarkers;
-          var data = Papa.parse(response.data, { header: true });
-          data.forEach(row => {
-            const ccaa = CCAA_DATA.find(element => element.name === row[0]);
-          });
-          console.log(data);
-        });
+      this.ccaaMarkers.forEach(ccaa => {
+        L.circle([ccaa.coords.lon, ccaa.coords.lat], {
+          radius: ccaa.cases.today * 5
+        }).addTo(this.map);
+      });      
+
+      /* Deaths Layer */ 
+
+    },
+    extractData(rawData) {
+      var parsedData = Papa.parse(rawData, { header: true });
+      for (let csvRow of parsedData.data) {
+        this.ccaaMarkers.push(this.createMarker(csvRow));
+      }
+    },
+    createMarker(csvRow) {
+      const ccaa = CCAA_DATA.find(
+        element => element.cod_ine === csvRow.cod_ine
+      );
+      if (ccaa) {
+        var yesterdayCases =
+          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
+        var todayCases =
+          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
+        return {
+          ...ccaa,
+          cases: {
+            today: parseInt(todayCases),
+            yesterday: parseInt(yesterdayCases)
+          }
+        };
+      }
     }
   }
 };
