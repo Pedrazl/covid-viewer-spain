@@ -4,6 +4,7 @@
 <script>
 import L from "leaflet";
 import Papa from "papaparse";
+import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import { CCAA_DATA } from "@/config/ccaa.js";
 import { getCases } from "@/api/datadista.js";
 
@@ -11,7 +12,7 @@ export default {
   data() {
     return {
       map: {},
-      cases: [],
+      geoJsonLayer: { type: "FeatureCollection", features: [] },
       ccaaMarkers: []
     };
   },
@@ -22,15 +23,14 @@ export default {
   },
   mounted() {
     this.init();
-    this.loadCovidLayers();
   },
   methods: {
     init() {
       this.map = L.map("map").setView([40.505, -3.09], 6);
       this.addBaseMap();
-      this.loadCovidLayers();
+      this.loadCovidDataOnLayer();
     },
-    addBaseMap(){
+    addBaseMap() {
       var CartoDB_DarkMatter = L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -42,6 +42,67 @@ export default {
       );
       CartoDB_DarkMatter.addTo(this.map);
     },
+    loadGeojsonLayer(geojsonData) {
+      L.geoJson(geojsonData, { style: this.style }).addTo(this.map);
+    },
+    async loadCovidDataOnLayer() {
+      try {
+        var rawData = await getCases();
+        var parsedData = Papa.parse(rawData, { header: true });
+        this.addCasesData(parsedData);
+        this.loadGeojsonLayer(this.geoJsonLayer);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    addCasesData(parsedData) {
+      let self = this;
+      for (let csvRow of parsedData.data) {
+        const foundRegion = SPANISH_REGIONS_GEOJSON.features.find(
+          element => element.properties.codigo === csvRow.cod_ine
+        );
+        if (foundRegion) {
+          var yesterdayCases =
+            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
+          var todayCases =
+            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
+
+          foundRegion.properties.cases = {
+            today: todayCases,
+            yesterday: yesterdayCases
+          };
+          self.geoJsonLayer.features.push(foundRegion);
+        }
+      }
+    },
+    style(feature) {
+      return {
+        fillColor: this.getColor(feature.properties.cases.today),
+        weight: 2,
+        opacity: 1,
+        color: "white",
+        dashArray: "3",
+        fillOpacity: 0.7
+      };
+    },
+
+    getColor(d) {
+      return d > 1000
+        ? "#800026"
+        : d > 500
+        ? "#BD0026"
+        : d > 200
+        ? "#E31A1C"
+        : d > 100
+        ? "#FC4E2A"
+        : d > 50
+        ? "#FD8D3C"
+        : d > 20
+        ? "#FEB24C"
+        : d > 10
+        ? "#FED976"
+        : "#FFEDA0";
+    },
     async loadCovidLayers() {
       /* Cases layer */
       var rawData = await getCases();
@@ -51,16 +112,9 @@ export default {
         L.circle([ccaa.coords.lon, ccaa.coords.lat], {
           radius: ccaa.cases.today * 5
         }).addTo(this.map);
-      });      
+      });
 
-      /* Deaths Layer */ 
-
-    },
-    extractData(rawData) {
-      var parsedData = Papa.parse(rawData, { header: true });
-      for (let csvRow of parsedData.data) {
-        this.ccaaMarkers.push(this.createMarker(csvRow));
-      }
+      /* Deaths Layer */
     },
     createMarker(csvRow) {
       const ccaa = CCAA_DATA.find(
