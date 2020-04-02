@@ -115,8 +115,8 @@ export const CCAA_DATA = [
     cod_ine: "15",
     name: "Navarra",
     coords: {
-      lon: 37.995409,
-      lat: -1.129751
+      lon: 42.784634,
+      lat: -1.673009
     }
   },
   {
