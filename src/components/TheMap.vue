@@ -80,26 +80,25 @@ export default {
         fillColor: this.getColor(feature.properties.cases.today),
         weight: 2,
         opacity: 1,
-        color: "white",
+        color: "grey",
         dashArray: "3",
         fillOpacity: 0.7
       };
     },
-
     getColor(d) {
-      return d > 1000
+      return d > 20000
         ? "#800026"
-        : d > 500
+        : d > 15000
         ? "#BD0026"
-        : d > 200
+        : d > 10000
         ? "#E31A1C"
-        : d > 100
+        : d > 5000
         ? "#FC4E2A"
-        : d > 50
+        : d > 2500
         ? "#FD8D3C"
-        : d > 20
+        : d > 1000
         ? "#FEB24C"
-        : d > 10
+        : d > 500
         ? "#FED976"
         : "#FFEDA0";
     },
