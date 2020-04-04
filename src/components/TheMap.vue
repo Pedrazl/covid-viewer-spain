@@ -78,30 +78,31 @@ export default {
     style(feature) {
       return {
         fillColor: this.getColor(feature.properties.cases.today),
-        weight: 2,
+        weight: 1,
         opacity: 1,
-        color: "grey",
-        dashArray: "3",
+        color: "white",
+        dashArray: "1",
         fillOpacity: 0.7
       };
     },
     getColor(d) {
       return d > 20000
-        ? "#800026"
+        ? "#990000"
         : d > 15000
-        ? "#BD0026"
+        ? "#d7301f"
         : d > 10000
-        ? "#E31A1C"
+        ? "#ef6548"
         : d > 5000
-        ? "#FC4E2A"
+        ? "#fc8d59"
         : d > 2500
-        ? "#FD8D3C"
+        ? "#fdbb84"
         : d > 1000
-        ? "#FEB24C"
+        ? "#fdd49e"
         : d > 500
-        ? "#FED976"
-        : "#FFEDA0";
-    },
+        ? "#fee8c8"
+        : "#fff7ec";
+    },    
+   
     async loadCovidLayers() {
       /* Cases layer */
       var rawData = await getCases();
