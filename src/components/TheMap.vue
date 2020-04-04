@@ -3,12 +3,23 @@
 </template>
 <script>
 import L from "leaflet";
-import HeatmapOverlay from "leaflet-heatmap";
+import Papa from "papaparse";
+import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
+import { CCAA_DATA } from "@/config/ccaa.js";
+import { getCases } from "@/api/datadista.js";
+
 export default {
   data() {
     return {
-      map: {}
+      map: {},
+      geoJsonLayer: { type: "FeatureCollection", features: [] },
+      ccaaMarkers: []
     };
+  },
+  computed: {
+    today: function() {
+      return new Date().toLocaleDateString();
+    }
   },
   mounted() {
     this.init();
@@ -16,6 +27,10 @@ export default {
   methods: {
     init() {
       this.map = L.map("map").setView([40.505, -3.09], 6);
+      this.addBaseMap();
+      this.loadCovidDataOnLayer();
+    },
+    addBaseMap() {
       var CartoDB_DarkMatter = L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -26,43 +41,98 @@ export default {
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
-      //this.loadHeatLayer();
-      this.loadCovidLayers();
     },
-    loadCovidLayers(){
-      L.circle([39.5, -3.4], {radius: 100000}).addTo(this.map);
+    loadGeojsonLayer(geojsonData) {
+      L.geoJson(geojsonData, { style: this.style }).addTo(this.map);
     },
-    loadHeatLayer() {
-      var testData = {
-        max: 8,
-        data: [
-          { lat: 24.6408, lng: 46.7728, count: 3 },
-          { lat: 50.75, lng: -1.55, count: 1 }
-        ]
-      };
+    async loadCovidDataOnLayer() {
+      try {
+        var rawData = await getCases();
+        var parsedData = Papa.parse(rawData, { header: true });
+        this.addCasesData(parsedData);
+        this.loadGeojsonLayer(this.geoJsonLayer);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    addCasesData(parsedData) {
+      let self = this;
+      for (let csvRow of parsedData.data) {
+        const foundRegion = SPANISH_REGIONS_GEOJSON.features.find(
+          element => element.properties.codigo === csvRow.cod_ine
+        );
+        if (foundRegion) {
+          var yesterdayCases =
+            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
+          var todayCases =
+            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
 
-      var cfg = {
-        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        // if scaleRadius is false it will be the constant radius used in pixels
-        radius: 2,
-        maxOpacity: 0.8,
-        // scales the radius based on map zoom
-        scaleRadius: true,
-        // if set to false the heatmap uses the global maximum for colorization
-        // if activated: uses the data maximum within the current map boundaries
-        //   (there will always be a red spot with useLocalExtremas true)
-        useLocalExtrema: true,
-        // which field name in your data represents the latitude - default "lat"
-        latField: "lat",
-        // which field name in your data represents the longitude - default "lng"
-        lngField: "lng",
-        // which field name in your data represents the data value - default "value"
-        valueField: "count"
+          foundRegion.properties.cases = {
+            today: todayCases,
+            yesterday: yesterdayCases
+          };
+          self.geoJsonLayer.features.push(foundRegion);
+        }
+      }
+    },
+    style(feature) {
+      return {
+        fillColor: this.getColor(feature.properties.cases.today),
+        weight: 1,
+        opacity: 1,
+        color: "white",
+        dashArray: "1",
+        fillOpacity: 0.7
       };
+    },
+    getColor(d) {
+      return d > 20000
+        ? "#990000"
+        : d > 15000
+        ? "#d7301f"
+        : d > 10000
+        ? "#ef6548"
+        : d > 5000
+        ? "#fc8d59"
+        : d > 2500
+        ? "#fdbb84"
+        : d > 1000
+        ? "#fdd49e"
+        : d > 500
+        ? "#fee8c8"
+        : "#fff7ec";
+    },    
+   
+    async loadCovidLayers() {
+      /* Cases layer */
+      var rawData = await getCases();
+      this.extractData(rawData);
 
-      var heatmapLayer = new HeatmapOverlay(cfg);
-      heatmapLayer.setData(testData);
-      heatmapLayer.addTo(this.map);
+      this.ccaaMarkers.forEach(ccaa => {
+        L.circle([ccaa.coords.lon, ccaa.coords.lat], {
+          radius: ccaa.cases.today * 5
+        }).addTo(this.map);
+      });
+
+      /* Deaths Layer */
+    },
+    createMarker(csvRow) {
+      const ccaa = CCAA_DATA.find(
+        element => element.cod_ine === csvRow.cod_ine
+      );
+      if (ccaa) {
+        var yesterdayCases =
+          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
+        var todayCases =
+          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
+        return {
+          ...ccaa,
+          cases: {
+            today: parseInt(todayCases),
+            yesterday: parseInt(yesterdayCases)
+          }
+        };
+      }
     }
   }
 };
