@@ -5,21 +5,21 @@
 import L from "leaflet";
 import Papa from "papaparse";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
-import { CCAA_DATA } from "@/config/ccaa.js";
 import { getCases } from "@/api/datadista.js";
 
 export default {
   data() {
     return {
       map: {},
-      geoJsonLayer: { type: "FeatureCollection", features: [] },
-      ccaaMarkers: []
+      geoJsonData: { type: "FeatureCollection", features: [] },
+      covidCasesLayer: {},
+      infoControl: {},
     };
   },
   computed: {
     today: function() {
       return new Date().toLocaleDateString();
-    }
+    },
   },
   mounted() {
     this.init();
@@ -28,6 +28,7 @@ export default {
     init() {
       this.map = L.map("map").setView([40.505, -3.09], 6);
       this.addBaseMap();
+      this.addInfoControl();
       this.loadCovidDataOnLayer();
     },
     addBaseMap() {
@@ -37,20 +38,48 @@ export default {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
           subdomains: "abcd",
-          maxZoom: 19
+          maxZoom: 19,
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
     },
+    addInfoControl() {
+      this.infoControl = L.control();
+
+      this.infoControl.onAdd = function() {
+        this._div = L.DomUtil.create("div", "info"); // create a div with a class "info"
+        this.update();
+        return this._div;
+      };
+      this.infoControl.update = function(props) {
+        this._div.innerHTML =
+          "<h4>COVID-19 en España</h4>" +
+          (props
+            ? "<b>" +
+              props.comunidade_autonoma +
+              "</b><br />" +
+              props.cases.today +
+              " contagios hoy" +
+              "</b><br />" +
+              props.cases.yesterday +
+              " contagios ayer"
+            : "Pase el ratón sobre una región");
+      };
+
+      this.infoControl.addTo(this.map);
+    },
     loadGeojsonLayer(geojsonData) {
-      L.geoJson(geojsonData, { style: this.style }).addTo(this.map);
+      this.covidCasesLayer = L.geoJson(geojsonData, {
+        style: this.style,
+        onEachFeature: this.onEachFeature,
+      }).addTo(this.map);
     },
     async loadCovidDataOnLayer() {
       try {
         var rawData = await getCases();
         var parsedData = Papa.parse(rawData, { header: true });
         this.addCasesData(parsedData);
-        this.loadGeojsonLayer(this.geoJsonLayer);
+        this.loadGeojsonLayer(this.geoJsonData);
       } catch (err) {
         console.log(err);
       }
@@ -59,7 +88,7 @@ export default {
       let self = this;
       for (let csvRow of parsedData.data) {
         const foundRegion = SPANISH_REGIONS_GEOJSON.features.find(
-          element => element.properties.codigo === csvRow.cod_ine
+          (element) => element.properties.codigo === csvRow.cod_ine
         );
         if (foundRegion) {
           var yesterdayCases =
@@ -69,11 +98,36 @@ export default {
 
           foundRegion.properties.cases = {
             today: todayCases,
-            yesterday: yesterdayCases
+            yesterday: yesterdayCases,
           };
-          self.geoJsonLayer.features.push(foundRegion);
+          self.geoJsonData.features.push(foundRegion);
         }
       }
+    },
+    onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: this.highlightFeature,
+        mouseout: this.resetHighlight,
+      });
+    },
+    highlightFeature(e) {
+      var layer = e.target;
+
+      layer.setStyle({
+        weight: 2,
+        color: "#333",
+        dashArray: "",
+        fillOpacity: 1,
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+      }
+      this.infoControl.update(layer.feature.properties);
+    },
+    resetHighlight(e) {
+      this.covidCasesLayer.resetStyle(e.target);
+      this.infoControl.update();
     },
     style(feature) {
       return {
@@ -82,7 +136,7 @@ export default {
         opacity: 1,
         color: "white",
         dashArray: "1",
-        fillOpacity: 0.7
+        fillOpacity: 0.7,
       };
     },
     getColor(d) {
@@ -101,40 +155,8 @@ export default {
         : d > 500
         ? "#fee8c8"
         : "#fff7ec";
-    },    
-   
-    async loadCovidLayers() {
-      /* Cases layer */
-      var rawData = await getCases();
-      this.extractData(rawData);
-
-      this.ccaaMarkers.forEach(ccaa => {
-        L.circle([ccaa.coords.lon, ccaa.coords.lat], {
-          radius: ccaa.cases.today * 5
-        }).addTo(this.map);
-      });
-
-      /* Deaths Layer */
     },
-    createMarker(csvRow) {
-      const ccaa = CCAA_DATA.find(
-        element => element.cod_ine === csvRow.cod_ine
-      );
-      if (ccaa) {
-        var yesterdayCases =
-          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
-        var todayCases =
-          csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
-        return {
-          ...ccaa,
-          cases: {
-            today: parseInt(todayCases),
-            yesterday: parseInt(yesterdayCases)
-          }
-        };
-      }
-    }
-  }
+  },
 };
 </script>
 
@@ -142,5 +164,19 @@ export default {
 .map-container {
   height: 100vh;
   width: 100%;
+}
+
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.info h4 {
+  margin: 0 0 5px;
+  color: #777;
 }
 </style>
