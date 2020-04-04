@@ -160,7 +160,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
 .map-container {
   height: 100vh;
   width: 100%;
