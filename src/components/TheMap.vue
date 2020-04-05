@@ -6,6 +6,7 @@ import L from "leaflet";
 import Papa from "papaparse";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import { getCases } from "@/api/datadista.js";
+import { calculateTrend } from "@/util.js";
 
 export default {
   data() {
@@ -42,6 +43,16 @@ export default {
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
+
+      /* ESRI WorldGray */
+      // var Esri_WorldGrayCanvas = L.tileLayer(
+      //   "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+      //   {
+      //     attribution: "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ",
+      //     maxZoom: 16,
+      //   }
+      // );
+      // Esri_WorldGrayCanvas.addTo(this.map);
     },
     addInfoControl() {
       this.infoControl = L.control();
@@ -52,18 +63,20 @@ export default {
         return this._div;
       };
       this.infoControl.update = function(props) {
-        this._div.innerHTML =
-          "<h4>COVID-19 en España</h4>" +
-          (props
-            ? "<b>" +
-              props.comunidade_autonoma +
-              "</b><br />" +
-              props.cases.today +
-              " contagios hoy" +
-              "</b><br />" +
-              props.cases.yesterday +
-              " contagios ayer"
-            : "Pase el ratón sobre una región");
+        if (!props) {
+          this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
+        } else {
+          var trend = calculateTrend(props.cases.today, props.cases.yesterday);
+          this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
+            props.comunidade_autonoma
+          }</b><br/><div class="info__label"><label>${
+            props.cases.today
+          } contagios hoy</label></div><div class="info__label"><label>${
+            props.cases.yesterday
+          } contagios ayer </label></div> <div class="info__label"><label>${trend}%</label><div> <i class="material-icons" style="font-size:28px">${
+            trend > 0 ? "trending_up" : "trending_down"
+          }</i></div></div>`;
+        }
       };
 
       this.infoControl.addTo(this.map);
@@ -160,7 +173,7 @@ export default {
 };
 </script>
 
-<style >
+<style lang="scss">
 .map-container {
   height: 100vh;
   width: 100%;
@@ -168,11 +181,16 @@ export default {
 
 .info {
   padding: 6px 8px;
-  font: 14px/16px Arial, Helvetica, sans-serif;
+  font: 1.1rem Arial, Helvetica, sans-serif;
   background: white;
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  &__label {
+    padding: 0.3rem;
+    color: brown;
+    font-size: 1rem;
+  }
 }
 
 .info h4 {
