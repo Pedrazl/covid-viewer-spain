@@ -1,27 +1,33 @@
 <template>
-  <div id="app">    
+  <div id="app" class="wrapper">
+    <the-header></the-header>
     <the-map />
   </div>
 </template>
 
 <script>
+import TheHeader from "./components/TheHeader.vue";
 import TheMap from "./components/TheMap.vue";
 
 export default {
   name: "App",
   components: {
-    TheMap
-  }
+    TheMap,
+    TheHeader,
+  },
 };
 </script>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  }
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 100px 1fr;
 }
 </style>
