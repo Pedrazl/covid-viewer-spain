@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="wrapper">
     <the-header></the-header>
+   
     <the-map />
   </div>
 </template>
@@ -20,14 +21,14 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  }
+}
 .wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 100px 1fr;
+  grid-template-rows: 170px 1fr;
 }
 </style>
