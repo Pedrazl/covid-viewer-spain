@@ -3,9 +3,8 @@
 </template>
 <script>
 import L from "leaflet";
-import Papa from "papaparse";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
-import { getCases } from "@/api/datadista.js";
+import { getCasesByRegion } from "@/api/datadista.js";
 import { calculateTrend } from "@/util.js";
 
 export default {
@@ -89,8 +88,7 @@ export default {
     },
     async loadCovidDataOnLayer() {
       try {
-        var rawData = await getCases();
-        var parsedData = Papa.parse(rawData, { header: true });
+        var parsedData = await getCasesByRegion();        
         this.addCasesData(parsedData);
         this.loadGeojsonLayer(this.geoJsonData);
       } catch (err) {
