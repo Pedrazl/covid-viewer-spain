@@ -15,27 +15,15 @@ npm run serve
 npm run build
 ```
 
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
 ### Lints and fixes files
 ```
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
 ## Built With
 
 - [Vue](https://vuejs.org/) - The Progressive Javascript Framework
+- [Leaflet](https://leafletjs.com/) - Branded License
 - [Webpack](https://webpack.js.org/) - Module Bundler
 
 ## Credits
@@ -44,6 +32,6 @@ Luis Pedraz :blue_heart::blue_heart::blue_heart:
 
 ## License
 
-This software use:
+This software use data from:
 
-- [Leaflet](https://leafletjs.com/) - Branded License
+- [Datadista](https://datadista.com/) - Investigación y datos para salir del ruido
