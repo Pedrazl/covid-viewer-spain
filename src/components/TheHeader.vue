@@ -73,7 +73,9 @@ export default {
     },
     formattedDate() {
       return this.todayData.fecha !== ""
-        ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10)
+        ? new Date(this.todayData.fecha)
+            .toLocaleString("es-ES", {})
+            .slice(0, 10)
         : "";
     },
     casesDifference() {

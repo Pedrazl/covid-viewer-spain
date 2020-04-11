@@ -43,4 +43,9 @@ const getRecoveredByRegion = async () => {
   return Papa.parse(res.data, { header: true });
 };
 
-export { getCasesByRegion, getDeathsByRegion, getRecoveredByRegion, getNationalData };
+export {
+  getCasesByRegion,
+  getDeathsByRegion,
+  getRecoveredByRegion,
+  getNationalData
+};
