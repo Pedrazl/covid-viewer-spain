@@ -4,7 +4,7 @@
 <script>
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
-import { getCasesByRegion } from "@/api/datadista.js";
+import { getCasesByRegion, getDeathsByRegion, getRecoveredByRegion } from "@/api/datadista.js";
 import { calculateTrend } from "@/util.js";
 
 export default {
@@ -32,32 +32,19 @@ export default {
       this.loadCovidDataOnLayer();
     },
     addBaseMap() {
-      var CartoDB_DarkMatter = L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: "abcd",
-          maxZoom: 19
-        }
-      );
+      var CartoDB_DarkMatter = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19
+      });
       CartoDB_DarkMatter.addTo(this.map);
-
-      /* ESRI WorldGray */
-      // var Esri_WorldGrayCanvas = L.tileLayer(
-      //   "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-      //   {
-      //     attribution: "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ",
-      //     maxZoom: 16,
-      //   }
-      // );
-      // Esri_WorldGrayCanvas.addTo(this.map);
     },
     addInfoControl() {
       this.infoControl = L.control();
 
       this.infoControl.onAdd = function() {
-        this._div = L.DomUtil.create("div", "info"); // create a div with a class "info"
+        this._div = L.DomUtil.create("div", "info");
         this.update();
         return this._div;
       };
@@ -65,15 +52,25 @@ export default {
         if (!props) {
           this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
         } else {
-          var trend = calculateTrend(props.cases.today, props.cases.yesterday);
+          var trendCases = calculateTrend(props.cases.today, props.cases.yesterday);
+          var trendRecovered = calculateTrend(props.recovered.today, props.cases.recovered.yesterday);
+          var trendDeaths = calculateTrend(props.deaths.today, props.cases.deaths.yesterday);
+
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
-          }</b><br/><div class="info__label"><label>${
+          }</b><br/><div class="info__label blue"><label>${
             props.cases.today
-          } contagios hoy</label></div><div class="info__label"><label>${
-            props.cases.yesterday
-          } contagios ayer </label></div> <div class="info__label"><label>${trend}%</label><div> <i class="material-icons" style="font-size:28px">${
-            trend > 0 ? "trending_up" : "trending_down"
+          } total contagios</label></div><div class="info__label green"><label>${
+            props.recovered.today
+          } total altas </label></div><div class="info__label red"><label>${
+            props.deaths.today
+          } total fallecidos </label></div><div class="info__label blue"><label>${trendCases}%</label><div> <i class="material-icons" style="font-size:28px">${
+            trendCases > 0 ? "trending_up" : "trending_down"
+          }</i></div><div class="info__label blue"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${
+            trendRecovered > 0 ? "trending_up" : "trending_down"
+          }</i></div>
+          <div class="info__label blue"><label>${trendDeaths}%</label><div> <i class="material-icons" style="font-size:28px">${
+            trendDeaths > 0 ? "trending_up" : "trending_down"
           }</i></div></div>`;
         }
       };
@@ -88,31 +85,36 @@ export default {
     },
     async loadCovidDataOnLayer() {
       try {
-        var parsedData = await getCasesByRegion();
-        this.addCasesData(parsedData);
+        var casesData = await getCasesByRegion();
+        var deathsData = await getDeathsByRegion();
+        var recoveredData = await getRecoveredByRegion();
+
+        this.addData(casesData, recoveredData, deathsData);
         this.loadGeojsonLayer(this.geoJsonData);
       } catch (err) {
         console.log(err);
       }
     },
-    addCasesData(parsedData) {
+    addData(casesData, recoveredData, deathsData) {
       let self = this;
-      for (let csvRow of parsedData.data) {
-        const foundRegion = SPANISH_REGIONS_GEOJSON.features.find(
-          element => element.properties.codigo === csvRow.cod_ine
-        );
-        if (foundRegion) {
-          var yesterdayCases =
-            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 2]];
-          var todayCases =
-            csvRow[Object.keys(csvRow)[Object.keys(csvRow).length - 1]];
+      for (let region of SPANISH_REGIONS_GEOJSON.features) {
+        var regionCasesRow = casesData.data.find(row => row.cod_ine === region.properties.codigo);
+        var regionDeathsRow = deathsData.data.find(row => row.cod_ine === region.properties.codigo);
+        var regionRecoveredRow = recoveredData.data.find(row => row.cod_ine === region.properties.codigo);
 
-          foundRegion.properties.cases = {
-            today: todayCases,
-            yesterday: yesterdayCases
-          };
-          self.geoJsonData.features.push(foundRegion);
-        }
+        region.properties.cases = {
+          today: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 1]],
+          yesterday: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 2]]
+        };
+        region.properties.recovered = {
+          today: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 1]],
+          yesterday: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 2]]
+        };
+        region.properties.deaths = {
+          today: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 1]],
+          yesterday: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 2]]
+        };
+        self.geoJsonData.features.push(region);
       }
     },
     onEachFeature(feature, layer) {
@@ -186,7 +188,6 @@ export default {
   border-radius: 5px;
   &__label {
     padding: 0.3rem;
-    color: brown;
     font-size: 1rem;
   }
 }
@@ -194,5 +195,16 @@ export default {
 .info h4 {
   margin: 0 0 5px;
   color: #777;
+}
+
+.red {
+  color: rgb(190, 7, 7);
+}
+.green {
+  color: rgb(10, 121, 10);
+}
+
+.blue {
+  color: rgb(15, 80, 202);
 }
 </style>
