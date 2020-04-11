@@ -22,7 +22,7 @@
         position="is-left"
       >
         <label class="highlight-data">
-          {{ formatNumbers(totalCases) }}</label
+          {{ formatNumbers(todayData.casos) }} (+{{casesDifference}})</label
         ></b-tooltip
       >
 
@@ -33,7 +33,7 @@
         position="is-left"
       >
         <label class="highlight-data">
-          {{ formatNumbers(totalRecovered) }}</label
+          {{ formatNumbers(todayData.altas) }} (+{{recoveredDifference}})</label
         >
       </b-tooltip>
 
@@ -43,7 +43,9 @@
         type="is-dark"
         position="is-left"
       >
-        <label class="highlight-data"> {{ formatNumbers(totalDeaths) }}</label>
+        <label class="highlight-data">
+          {{ formatNumbers(todayData.fallecimientos) }} (+{{deathsDifference}})</label
+        >
       </b-tooltip>
     </div>
   </div>
@@ -54,18 +56,25 @@ import { getNationalData } from "@/api/datadista.js";
 export default {
   data() {
     return {
-      lastUpdate: "",
-      totalCases: 0,
-      totalRecovered: 0,
-      totalDeaths: 0,
+      todayData: {},
+      yesterdayData: {}
     };
   },
   computed: {
     formattedDate() {
-      return this.lastUpdate !== ""
+      return this.todayData.fecha !== ""
         ? new Date(this.lastUpdate).toLocaleString("es-ES", {}).slice(0, 10)
         : "";
     },
+    casesDifference(){
+      return this.todayData.casos - this.yesterdayData.casos;
+    },
+    recoveredDifference(){
+      return this.todayData.altas - this.yesterdayData.altas;
+    },
+    deathsDifference(){
+      return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
+    }
   },
   mounted() {
     this.init();
@@ -77,20 +86,23 @@ export default {
     async loadCovidNationalData() {
       try {
         var parsedData = await getNationalData();
-        var lastData = parsedData.data[parsedData.data.length - 1];
-        this.lastUpdate = lastData.fecha;
-        this.totalCases = lastData.casos;
-        this.totalRecovered = lastData.altas;
-        this.totalDeaths = lastData.fallecimientos;
+        this.setData(
+          parsedData.data[parsedData.data.length - 1],
+          parsedData.data[parsedData.data.length - 2]
+        );
         console.log(parsedData);
       } catch (err) {
         console.log(err);
       }
     },
+    setData(todayData, yesterdayData) {
+      this.todayData = todayData;
+      this.yesterdayData = yesterdayData;
+    },
     formatNumbers(number) {
       return Number(number).toLocaleString("es-ES", {});
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
