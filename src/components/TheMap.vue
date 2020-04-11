@@ -53,25 +53,28 @@ export default {
           this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
         } else {
           var trendCases = calculateTrend(props.cases.today, props.cases.yesterday);
-          var trendRecovered = calculateTrend(props.recovered.today, props.cases.recovered.yesterday);
-          var trendDeaths = calculateTrend(props.deaths.today, props.cases.deaths.yesterday);
+          var trendRecovered = calculateTrend(props.recovered.today, props.recovered.yesterday);
+          var trendDeaths = calculateTrend(props.deaths.today, props.deaths.yesterday);
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
-          }</b><br/><div class="info__label blue"><label>${
+          }</b><div class="info__label blue"><label>${
             props.cases.today
           } total contagios</label></div><div class="info__label green"><label>${
             props.recovered.today
           } total altas </label></div><div class="info__label red"><label>${
             props.deaths.today
-          } total fallecidos </label></div><div class="info__label blue"><label>${trendCases}%</label><div> <i class="material-icons" style="font-size:28px">${
-            trendCases > 0 ? "trending_up" : "trending_down"
-          }</i></div><div class="info__label blue"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${
-            trendRecovered > 0 ? "trending_up" : "trending_down"
-          }</i></div>
-          <div class="info__label blue"><label>${trendDeaths}%</label><div> <i class="material-icons" style="font-size:28px">${
-            trendDeaths > 0 ? "trending_up" : "trending_down"
-          }</i></div></div>`;
+          } total fallecidos </label></div>
+          <div style="display:flex">
+          <div class="info__sum blue"><label>${trendCases}%</label>
+
+          <div> <i class="material-icons" style="font-size:28px">${trendCases > 0 ? "trending_up" : "trending_down"}</i></div></div>
+            
+          <div class="info__sum green"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${trendRecovered > 0 ? "trending_up" : "trending_down"}</i></div></div>
+
+          <div class="info__sum red"><label>${trendDeaths}%</label><div><i class="material-icons" style="font-size:28px">${trendDeaths > 0 ? "trending_up" : "trending_down"}</i></div></div></div>`
+          ;
+          
         }
       };
 
@@ -187,7 +190,14 @@ export default {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   &__label {
+    margin-top: 0.4rem;
     padding: 0.3rem;
+    font-size: 1rem;
+  }
+  &__sum{   
+    margin-top: 0.4rem;
+    padding: 0.3rem;
+    margin-right: 0.5rem;
     font-size: 1rem;
   }
 }
