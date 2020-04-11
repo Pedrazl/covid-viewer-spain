@@ -22,7 +22,7 @@
         position="is-left"
       >
         <label class="highlight-data">
-          {{ formatNumbers(todayData.casos) }} (+{{casesDifference}})</label
+          {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label
         ></b-tooltip
       >
 
@@ -33,7 +33,9 @@
         position="is-left"
       >
         <label class="highlight-data">
-          {{ formatNumbers(todayData.altas) }} (+{{recoveredDifference}})</label
+          {{ formatNumbers(todayData.altas) }} (+{{
+            recoveredDifference
+          }})</label
         >
       </b-tooltip>
 
@@ -44,10 +46,12 @@
         position="is-left"
       >
         <label class="highlight-data">
-          {{ formatNumbers(todayData.fallecimientos) }} (+{{deathsDifference}})</label
+          {{ formatNumbers(todayData.fallecimientos) }} (+{{
+            deathsDifference
+          }})</label
         >
       </b-tooltip>
-    </div  >    
+    </div>
   </div>
 </template>
 <script>
@@ -61,21 +65,24 @@ export default {
     };
   },
   computed: {
-    dataLoaded(){
-      return Object.keys(this.todayData).length > 0 && Object.keys(this.yesterdayData).length > 0;
+    dataLoaded() {
+      return (
+        Object.keys(this.todayData).length > 0 &&
+        Object.keys(this.yesterdayData).length > 0
+      );
     },
     formattedDate() {
       return this.todayData.fecha !== ""
-        ? new Date(this.lastUpdate).toLocaleString("es-ES", {}).slice(0, 10)
+        ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10)
         : "";
     },
-    casesDifference(){
+    casesDifference() {
       return this.todayData.casos - this.yesterdayData.casos;
     },
-    recoveredDifference(){
+    recoveredDifference() {
       return this.todayData.altas - this.yesterdayData.altas;
     },
-    deathsDifference(){
+    deathsDifference() {
       return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
     }
   },
