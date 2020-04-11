@@ -14,7 +14,7 @@
         </div>
       </section>
     </div>
-    <div class="header__summary">
+    <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-biohazard highlight-ico"></span>
       <b-tooltip
         label="Casos confirmados acumulados"
@@ -47,7 +47,7 @@
           {{ formatNumbers(todayData.fallecimientos) }} (+{{deathsDifference}})</label
         >
       </b-tooltip>
-    </div>
+    </div  >    
   </div>
 </template>
 <script>
@@ -61,6 +61,9 @@ export default {
     };
   },
   computed: {
+    dataLoaded(){
+      return Object.keys(this.todayData).length > 0 && Object.keys(this.yesterdayData).length > 0;
+    },
     formattedDate() {
       return this.todayData.fecha !== ""
         ? new Date(this.lastUpdate).toLocaleString("es-ES", {}).slice(0, 10)
