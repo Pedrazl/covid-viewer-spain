@@ -30,6 +30,7 @@ export default {
       this.addBaseMap();
       this.addInfoControl();
       this.loadCovidDataOnLayer();
+      this.addLegend();
     },
     addBaseMap() {
       var CartoDB_DarkMatter = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
@@ -68,16 +69,19 @@ export default {
           <div style="display:flex">
           <div class="info__sum blue"><label>${trendCases}%</label>
 
-          <div> <i class="material-icons" style="font-size:28px">${trendCases > 0 ? "trending_up" : "trending_down"}</i></div></div>
+          <div> <i class="material-icons" style="font-size:28px">${
+            trendCases > 0 ? "trending_up" : "trending_down"
+          }</i></div></div>
             
-          <div class="info__sum green"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${trendRecovered > 0 ? "trending_up" : "trending_down"}</i></div></div>
+          <div class="info__sum green"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${
+            trendRecovered > 0 ? "trending_up" : "trending_down"
+          }</i></div></div>
 
-          <div class="info__sum red"><label>${trendDeaths}%</label><div><i class="material-icons" style="font-size:28px">${trendDeaths > 0 ? "trending_up" : "trending_down"}</i></div></div></div>`
-          ;
-          
+          <div class="info__sum red"><label>${trendDeaths}%</label><div><i class="material-icons" style="font-size:28px">${
+            trendDeaths > 0 ? "trending_up" : "trending_down"
+          }</i></div></div></div>`;
         }
       };
-
       this.infoControl.addTo(this.map);
     },
     loadGeojsonLayer(geojsonData) {
@@ -120,10 +124,32 @@ export default {
         self.geoJsonData.features.push(region);
       }
     },
+    addLegend() {
+      let self = this;
+      var legend = L.control({ position: "bottomright" });
+
+      legend.onAdd = function() {
+        var div = L.DomUtil.create("div", "info legend"),
+          grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        div.innerHTML = "<h5 class='subtitle is-5'>% Casos (24h)</h5>"
+        for (var i = 0; i < grades.length; i++) {
+          div.innerHTML +=
+            '<i style="background:' + self.getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? ' &ndash; ' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+      };
+
+      legend.addTo(this.map);
+    },
     onEachFeature(feature, layer) {
       layer.on({
         mouseover: this.highlightFeature,
-        mouseout: this.resetHighlight
+        mouseout: this.resetHighlight,
+        click: this.highlightFeature
       });
     },
     highlightFeature(e) {
@@ -146,8 +172,9 @@ export default {
       this.infoControl.update();
     },
     style(feature) {
+      let trend = calculateTrend(feature.properties.cases.today, feature.properties.cases.yesterday);
       return {
-        fillColor: this.getColor(feature.properties.cases.today),
+        fillColor: this.getColor(trend),
         weight: 1,
         opacity: 1,
         color: "white",
@@ -156,19 +183,19 @@ export default {
       };
     },
     getColor(d) {
-      return d > 20000
+      return d > 10
         ? "#990000"
-        : d > 15000
+        : d > 5.5
         ? "#d7301f"
-        : d > 10000
+        : d > 4.5
         ? "#ef6548"
-        : d > 5000
+        : d > 3.5
         ? "#fc8d59"
-        : d > 2500
+        : d > 2.5
         ? "#fdbb84"
-        : d > 1000
+        : d > 1.5
         ? "#fdd49e"
-        : d > 500
+        : d > 1
         ? "#fee8c8"
         : "#fff7ec";
     }
@@ -178,7 +205,7 @@ export default {
 
 <style lang="scss">
 .map-container {
-  height: 100vh;
+  height: calc(100vh - 170px);
   width: 100%;
 }
 
@@ -194,7 +221,7 @@ export default {
     padding: 0.3rem;
     font-size: 1rem;
   }
-  &__sum{   
+  &__sum {
     margin-top: 0.4rem;
     padding: 0.3rem;
     margin-right: 0.5rem;
@@ -216,5 +243,20 @@ export default {
 
 .blue {
   color: rgb(15, 80, 202);
+}
+
+.legend {
+  line-height: 18px;
+  color: #555;
+  &__label {
+    font-size: 1rem;
+  }
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
 }
 </style>
