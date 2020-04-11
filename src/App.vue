@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="wrapper">
     <the-header></the-header>
-   
+
     <the-map />
   </div>
 </template>
@@ -14,8 +14,8 @@ export default {
   name: "App",
   components: {
     TheMap,
-    TheHeader,
-  },
+    TheHeader
+  }
 };
 </script>
 

@@ -13,13 +13,13 @@ export default {
       map: {},
       geoJsonData: { type: "FeatureCollection", features: [] },
       covidCasesLayer: {},
-      infoControl: {},
+      infoControl: {}
     };
   },
   computed: {
     today: function() {
       return new Date().toLocaleDateString();
-    },
+    }
   },
   mounted() {
     this.init();
@@ -38,7 +38,7 @@ export default {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
           subdomains: "abcd",
-          maxZoom: 19,
+          maxZoom: 19
         }
       );
       CartoDB_DarkMatter.addTo(this.map);
@@ -83,12 +83,12 @@ export default {
     loadGeojsonLayer(geojsonData) {
       this.covidCasesLayer = L.geoJson(geojsonData, {
         style: this.style,
-        onEachFeature: this.onEachFeature,
+        onEachFeature: this.onEachFeature
       }).addTo(this.map);
     },
     async loadCovidDataOnLayer() {
       try {
-        var parsedData = await getCasesByRegion();        
+        var parsedData = await getCasesByRegion();
         this.addCasesData(parsedData);
         this.loadGeojsonLayer(this.geoJsonData);
       } catch (err) {
@@ -99,7 +99,7 @@ export default {
       let self = this;
       for (let csvRow of parsedData.data) {
         const foundRegion = SPANISH_REGIONS_GEOJSON.features.find(
-          (element) => element.properties.codigo === csvRow.cod_ine
+          element => element.properties.codigo === csvRow.cod_ine
         );
         if (foundRegion) {
           var yesterdayCases =
@@ -109,7 +109,7 @@ export default {
 
           foundRegion.properties.cases = {
             today: todayCases,
-            yesterday: yesterdayCases,
+            yesterday: yesterdayCases
           };
           self.geoJsonData.features.push(foundRegion);
         }
@@ -118,7 +118,7 @@ export default {
     onEachFeature(feature, layer) {
       layer.on({
         mouseover: this.highlightFeature,
-        mouseout: this.resetHighlight,
+        mouseout: this.resetHighlight
       });
     },
     highlightFeature(e) {
@@ -128,7 +128,7 @@ export default {
         weight: 2,
         color: "#333",
         dashArray: "",
-        fillOpacity: 1,
+        fillOpacity: 1
       });
 
       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -147,7 +147,7 @@ export default {
         opacity: 1,
         color: "white",
         dashArray: "1",
-        fillOpacity: 0.7,
+        fillOpacity: 0.7
       };
     },
     getColor(d) {
@@ -166,8 +166,8 @@ export default {
         : d > 500
         ? "#fee8c8"
         : "#fff7ec";
-    },
-  },
+    }
+  }
 };
 </script>
 
