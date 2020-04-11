@@ -1,5 +1,7 @@
 import axios from "axios";
 import Papa from "papaparse";
+
+const _proxyurl = "https://cors-anywhere.herokuapp.com/";
 const _basicHeaders = {
   "Content-Type": "text/csv",
   "Access-Control-Allow-Origin": "*",
@@ -7,22 +9,38 @@ const _basicHeaders = {
 };
 
 const getNationalData = async () => {
-  const proxyurl = "https://cors-anywhere.herokuapp.com/";
   const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/nacional_covid19.csv`;
-  const res = await axios.get(proxyurl + url, {
+  const res = await axios.get(_proxyurl + url, {
     headers: _basicHeaders
   });
   return Papa.parse(res.data, { header: true });
 };
 
 const getCasesByRegion = async () => {
-  const proxyurl = "https://cors-anywhere.herokuapp.com/";
   const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_casos.csv`;
-  const res = await axios.get(proxyurl + url, {
+  const res = await axios.get(_proxyurl + url, {
     headers: _basicHeaders
   });
 
   return Papa.parse(res.data, { header: true });
 };
 
-export { getCasesByRegion, getNationalData };
+const getDeathsByRegion = async () => {
+  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_fallecidos.csv`;
+  const res = await axios.get(_proxyurl + url, {
+    headers: _basicHeaders
+  });
+
+  return Papa.parse(res.data, { header: true });
+};
+
+const getRecoveredByRegion = async () => {
+  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_altas.csv`;
+  const res = await axios.get(_proxyurl + url, {
+    headers: _basicHeaders
+  });
+
+  return Papa.parse(res.data, { header: true });
+};
+
+export { getCasesByRegion, getDeathsByRegion, getRecoveredByRegion, getNationalData };
