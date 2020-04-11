@@ -1,4 +1,4 @@
-# covid-spain-viewer
+# COVID-19 VIEWER (SPAIN)
 
 ## Project setup
 ```
@@ -32,3 +32,18 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Built With
+
+- [Vue](https://vuejs.org/) - The Progressive Javascript Framework
+- [Webpack](https://webpack.js.org/) - Module Bundler
+
+## Credits
+
+Luis Pedraz :blue_heart::blue_heart::blue_heart:
+
+## License
+
+This software use:
+
+- [Leaflet](https://leafletjs.com/) - Branded License
