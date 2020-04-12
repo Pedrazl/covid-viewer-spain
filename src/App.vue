@@ -1,7 +1,6 @@
 <template>
   <div id="app" class="wrapper">
     <the-header></the-header>
-
     <the-map />
   </div>
 </template>
@@ -29,6 +28,14 @@ export default {
 .wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 170px 1fr;
+  grid-template-rows: 140px 1fr;
+}
+
+@media only screen and (min-width: $breakpoint-tabletToDesktop) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 170px 1fr;
+  }
 }
 </style>

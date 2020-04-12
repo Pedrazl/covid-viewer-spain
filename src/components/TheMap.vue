@@ -4,11 +4,7 @@
 <script>
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
-import {
-  getCasesByRegion,
-  getDeathsByRegion,
-  getRecoveredByRegion
-} from "@/api/datadista.js";
+import { getCasesByRegion, getDeathsByRegion, getRecoveredByRegion } from "@/api/datadista.js";
 import { calculateTrend } from "@/util.js";
 
 export default {
@@ -37,15 +33,12 @@ export default {
       this.addLegend();
     },
     addBaseMap() {
-      var CartoDB_DarkMatter = L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: "abcd",
-          maxZoom: 19
-        }
-      );
+      var CartoDB_DarkMatter = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19
+      });
       CartoDB_DarkMatter.addTo(this.map);
     },
     addInfoControl() {
@@ -60,18 +53,9 @@ export default {
         if (!props) {
           this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
         } else {
-          var trendCases = calculateTrend(
-            props.cases.today,
-            props.cases.yesterday
-          );
-          var trendRecovered = calculateTrend(
-            props.recovered.today,
-            props.recovered.yesterday
-          );
-          var trendDeaths = calculateTrend(
-            props.deaths.today,
-            props.deaths.yesterday
-          );
+          var trendCases = calculateTrend(props.cases.today, props.cases.yesterday);
+          var trendRecovered = calculateTrend(props.recovered.today, props.recovered.yesterday);
+          var trendDeaths = calculateTrend(props.deaths.today, props.deaths.yesterday);
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
@@ -121,57 +105,21 @@ export default {
     addData(casesData, recoveredData, deathsData) {
       let self = this;
       for (let region of SPANISH_REGIONS_GEOJSON.features) {
-        var regionCasesRow = casesData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-        var regionDeathsRow = deathsData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-        var regionRecoveredRow = recoveredData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
+        var regionCasesRow = casesData.data.find(row => row.cod_ine === region.properties.codigo);
+        var regionDeathsRow = deathsData.data.find(row => row.cod_ine === region.properties.codigo);
+        var regionRecoveredRow = recoveredData.data.find(row => row.cod_ine === region.properties.codigo);
 
         region.properties.cases = {
-          today:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 2
-              ]
-            ]
+          today: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 1]],
+          yesterday: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 2]]
         };
         region.properties.recovered = {
-          today:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 2
-              ]
-            ]
+          today: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 1]],
+          yesterday: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 2]]
         };
         region.properties.deaths = {
-          today:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 2
-              ]
-            ]
+          today: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 1]],
+          yesterday: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 2]]
         };
         self.geoJsonData.features.push(region);
       }
@@ -204,8 +152,12 @@ export default {
       layer.on({
         mouseover: this.highlightFeature,
         mouseout: this.resetHighlight,
-        click: this.highlightFeature
+        click: this.clickFeature
       });
+    },
+    clickFeature(e){
+      this.resetHighlight(e);
+      this.highlightFeature(e);
     },
     highlightFeature(e) {
       var layer = e.target;
@@ -227,10 +179,7 @@ export default {
       this.infoControl.update();
     },
     style(feature) {
-      let trend = calculateTrend(
-        feature.properties.cases.today,
-        feature.properties.cases.yesterday
-      );
+      let trend = calculateTrend(feature.properties.cases.today, feature.properties.cases.yesterday);
       return {
         fillColor: this.getColor(trend),
         weight: 1,
@@ -263,7 +212,7 @@ export default {
 
 <style lang="scss">
 .map-container {
-  height: calc(100vh - 170px);
+  height: calc(100vh - 140px);
   width: 100%;
 }
 
@@ -304,7 +253,7 @@ export default {
 }
 
 .legend {
-  line-height: 18px;
+  // line-height: 18px;
   color: #555;
   &__label {
     font-size: 1rem;
@@ -316,5 +265,11 @@ export default {
   float: left;
   margin-right: 8px;
   opacity: 0.7;
+}
+@media only screen and (min-width: $breakpoint-tabletToDesktop) {
+  .map-container {
+    height: calc(100vh - 170px);
+    width: 100%;
+  }
 }
 </style>
