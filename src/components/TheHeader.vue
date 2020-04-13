@@ -19,17 +19,17 @@
     </div>
     <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-biohazard highlight-ico"></span>
-      <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-left">
+      <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
         <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label></b-tooltip
       >
 
       <span class="mdi mdi-heart highlight-ico"></span>
-      <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-left">
+      <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-top">
         <label class="highlight-data"> {{ formatNumbers(todayData.altas) }} (+{{ recoveredDifference }})</label>
       </b-tooltip>
 
       <span class="mdi mdi-grave-stone highlight-ico"></span>
-      <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-left">
+      <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-top">
         <label class="highlight-data"> {{ formatNumbers(todayData.fallecimientos) }} (+{{ deathsDifference }})</label>
       </b-tooltip>
     </div>
@@ -142,14 +142,10 @@ export default {
     &__summary {
       padding-top: 0;
     }
-  }
-
-  .header h1 {
-    color: #ffffff;
-  }
+  }  
 
   .highlight-data {
-    font-size: 3rem;
+    font-size: 1.5rem;
     margin: 1rem;
     margin-right: 3rem;
   }
@@ -162,4 +158,29 @@ export default {
     display: contents !important;
   }
 }
+@media only screen and (min-width: $breakpoint-desktopToHighResolution) {
+  .header {
+    display: grid;
+    grid-template-columns: 0.4fr 1fr;
+    grid-template-rows: 1fr;
+    &__summary {
+      padding-top: 0;
+    }
+  }  
+
+  .highlight-data {
+    font-size: 2.5rem;
+    margin: 1rem;
+    margin-right: 3rem;
+  }
+
+  .header-mobile {
+    display: none;
+  }
+
+  .hero {
+    display: contents !important;
+  }
+}
+
 </style>
