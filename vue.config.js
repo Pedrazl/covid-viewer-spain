@@ -4,6 +4,7 @@ module.exports = {
   chainWebpack(config) {
     config.resolve.alias.set("@", path.join(__dirname, "./src"));
   },
+  publicPath: "/covid-viewer-spain/",
   runtimeCompiler: true,
   css: {
     loaderOptions: {
