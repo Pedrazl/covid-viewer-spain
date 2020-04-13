@@ -1,11 +1,12 @@
 <template>
   <div class="header">
     <div class="header__title">
-      <h3 class="subtitle is-3">
-        COVID-19 <label class="small"> - {{ formattedDate }}-</label>
-      </h3>
-      <!-- <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>       -->
-      <!-- <section class="hero is-light">
+      <section class="header-mobile">
+        <h3 class="subtitle is-3">
+          COVID-19 <label class="small"> - {{ formattedDate }}-</label>
+        </h3>
+      </section>
+      <section class="hero is-light">
         <div class="hero-body">
           <div class="container">
             <h1 class="title">
@@ -13,14 +14,8 @@
             </h1>
             <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>
           </div>
-          <div class="container-mobile">
-            <h5 class="title is-5">
-              COVID-19
-            </h5>
-            <label>({{ formattedDate }})</label>
-          </div>
         </div>
-      </section> -->
+      </section>
     </div>
     <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-biohazard highlight-ico"></span>
@@ -94,11 +89,6 @@ export default {
 };
 </script>
 <style lang="scss">
-// .container {
-//   display: contents;
-//   border-right: 1px solid #333;
-// }
-
 .small {
   font-size: 0.9rem;
 }
@@ -122,6 +112,10 @@ export default {
   }
 }
 
+.hero {
+  display: none !important;
+}
+
 .highlight-data {
   font-size: 1rem;
   margin: 0.5rem;
@@ -133,34 +127,21 @@ export default {
 
 /* Non-mobile styles, 750px breakpoint */
 @media only screen and (min-width: $breakpoint-movilToTablet) {
-  .header {
-    display: grid;
-    grid-template-columns: 0.3fr 1fr;
-    background-color: #f5f5f5;
-    &__title {
-      display: contents;
-    }
-    &__summary {
-      display: flex;
-      align-items: center;
-      color: black;
-      justify-content: center;
-    }
+  .highlight-data {
+    font-size: 1.5rem;
+    margin: 0.5rem;
+    margin-right: 1rem;
   }
 }
 
 @media only screen and (min-width: $breakpoint-tabletToDesktop) {
-  // .container {
-  //   display: contents;
-  //   border-right: 1px solid #333;
-  // }
-  // .container-mobile {
-  //   display: none;
- // }
-
   .header {
     display: grid;
     grid-template-columns: 0.4fr 1fr;
+    grid-template-rows: 1fr;
+    &__summary {
+      padding-top: 0;
+    }
   }
 
   .header h1 {
@@ -171,6 +152,14 @@ export default {
     font-size: 3rem;
     margin: 1rem;
     margin-right: 3rem;
+  }
+
+  .header-mobile {
+    display: none;
+  }
+
+  .hero {
+    display: contents !important;
   }
 }
 </style>

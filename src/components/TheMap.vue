@@ -59,9 +59,9 @@ export default {
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
-          }</b><div class="info__label blue"><label>${
+          }</b> (ult.24h)<div class="info__label blue"><label>${
             props.cases.today
-          } total contagios</label></div><div class="info__label green"><label>${
+          } total casos</label></div><div class="info__label green"><label>${
             props.recovered.today
           } total altas </label></div><div class="info__label red"><label>${
             props.deaths.today
@@ -133,7 +133,7 @@ export default {
           grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
 
         // loop through our density intervals and generate a label with a colored square for each interval
-        div.innerHTML = "<h5 class='subtitle is-5'>% Casos (24h)</h5>";
+        div.innerHTML = "<h5 class='legend-title'>% Casos (24h)</h5>";
         for (var i = 0; i < grades.length; i++) {
           div.innerHTML +=
             '<i style="background:' +
@@ -264,8 +264,14 @@ export default {
   height: 18px;
   float: left;
   margin-right: 8px;
-  opacity: 0.7;
+  opacity: 0.7;  
 }
+
+.legend-title{
+  font-size: 1.2rem;      
+  padding-bottom: 0.5rem;
+}
+
 @media only screen and (min-width: $breakpoint-tabletToDesktop) {
   .map-container {
     height: calc(100vh - 170px);
