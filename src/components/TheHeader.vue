@@ -12,25 +12,49 @@
             <h1 class="title">
               COVID-19
             </h1>
-            <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>
+            <h2 class="subtitle">
+              Situación actual en España ({{ formattedDate }})
+            </h2>
           </div>
         </div>
       </section>
     </div>
     <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-biohazard highlight-ico"></span>
-      <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label></b-tooltip
+      <b-tooltip
+        label="Casos confirmados acumulados"
+        type="is-dark"
+        position="is-top"
+      >
+        <label class="highlight-data">
+          {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label
+        ></b-tooltip
       >
 
       <span class="mdi mdi-heart highlight-ico"></span>
-      <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.altas) }} (+{{ recoveredDifference }})</label>
+      <b-tooltip
+        label="Personas curadas acumuladas"
+        type="is-dark"
+        position="is-top"
+      >
+        <label class="highlight-data">
+          {{ formatNumbers(todayData.altas) }} (+{{
+            recoveredDifference
+          }})</label
+        >
       </b-tooltip>
 
       <span class="mdi mdi-grave-stone highlight-ico"></span>
-      <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.fallecimientos) }} (+{{ deathsDifference }})</label>
+      <b-tooltip
+        label="Personas fallecidas acumuladas"
+        type="is-dark"
+        position="is-top"
+      >
+        <label class="highlight-data">
+          {{ formatNumbers(todayData.fallecimientos) }} (+{{
+            deathsDifference
+          }})</label
+        >
       </b-tooltip>
     </div>
   </div>
@@ -47,10 +71,17 @@ export default {
   },
   computed: {
     dataLoaded() {
-      return Object.keys(this.todayData).length > 0 && Object.keys(this.yesterdayData).length > 0;
+      return (
+        Object.keys(this.todayData).length > 0 &&
+        Object.keys(this.yesterdayData).length > 0
+      );
     },
     formattedDate() {
-      return this.todayData.fecha !== "" ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10) : "";
+      return this.todayData.fecha !== ""
+        ? new Date(this.todayData.fecha)
+            .toLocaleString("es-ES", {})
+            .slice(0, 10)
+        : "";
     },
     casesDifference() {
       return this.todayData.casos - this.yesterdayData.casos;
@@ -78,11 +109,11 @@ export default {
         console.log(err);
       }
     },
-    getLastTwoDaysData(serieData){      
-      for (let i = serieData.length - 1; i > 0; i--){
-        if (serieData[i].fecha !== ""){
-          return [serieData[i], serieData[i-1]];
-        }     
+    getLastTwoDaysData(serieData) {
+      for (let i = serieData.length - 1; i > 0; i--) {
+        if (serieData[i].fecha !== "") {
+          return [serieData[i], serieData[i - 1]];
+        }
       }
       return null;
     },
@@ -150,7 +181,7 @@ export default {
     &__summary {
       padding-top: 0;
     }
-  }  
+  }
 
   .highlight-data {
     font-size: 1.5rem;
@@ -174,7 +205,7 @@ export default {
     &__summary {
       padding-top: 0;
     }
-  }  
+  }
 
   .highlight-data {
     font-size: 2.5rem;
@@ -190,5 +221,4 @@ export default {
     display: contents !important;
   }
 }
-
 </style>
