@@ -72,11 +72,19 @@ export default {
     async loadCovidNationalData() {
       try {
         var parsedData = await getNationalData();
-        this.setData(parsedData.data[parsedData.data.length - 1], parsedData.data[parsedData.data.length - 2]);
-        console.log(parsedData);
+        var lastDaysData = this.getLastTwoDaysData(parsedData.data);
+        this.setData(lastDaysData[0], lastDaysData[1]);
       } catch (err) {
         console.log(err);
       }
+    },
+    getLastTwoDaysData(serieData){      
+      for (let i = serieData.length - 1; i > 0; i--){
+        if (serieData[i].fecha !== ""){
+          return [serieData[i], serieData[i-1]];
+        }     
+      }
+      return null;
     },
     setData(todayData, yesterdayData) {
       this.todayData = todayData;
