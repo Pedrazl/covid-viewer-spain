@@ -1,4 +1,9 @@
 # COVID-19 VIEWER (SPAIN)
+COVID-19 Viewer is a Progressive Web App with updated data about the progression of Coronavirus cases in spanish regions
+
+You can watch it live at  <b> https://pedrazl.github.io/covid-viewer-spain/ </b>
+
+![alt text](https://github.com/Pedrazl/covid-viewer-spain/blob/master/public/img/Covid_Viewer_Screenshot.PNG?raw=true "Covid Viewer for Spain")
 
 ## Project setup
 ```
