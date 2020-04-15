@@ -101,10 +101,12 @@ export default {
       this.loadCovidNationalData();
     },
     async loadCovidNationalData() {
-      try {
+      try {       
+        this.$emit("statusLoading", true) ;
         var parsedData = await getNationalData();
         var lastDaysData = this.getLastTwoDaysData(parsedData.data);
         this.setData(lastDaysData[0], lastDaysData[1]);
+        this.$emit("statusLoading", false) ;
       } catch (err) {
         console.log(err);
       }
