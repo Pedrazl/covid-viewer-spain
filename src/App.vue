@@ -1,20 +1,23 @@
 <template>
   <div id="app" class="wrapper">
-    <the-header></the-header>
-    <the-map />
+    <the-header @statusLoading="setLoading"></the-header>
+    <the-map @statusLoading="setLoading" />
+    <b-loading :is-full-page="isFullPage" :active.sync="isLoading" :can-cancel="true"></b-loading>
   </div>
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue";
 import TheMap from "./components/TheMap.vue";
+import { loadingSpinnerMixin } from "@/mixins/loadingSpinner.js";
 
 export default {
   name: "App",
   components: {
     TheMap,
-    TheHeader
-  }
+    TheHeader,
+  },
+  mixins: [loadingSpinnerMixin]  
 };
 </script>
 

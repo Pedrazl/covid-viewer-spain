@@ -4,11 +4,7 @@
 <script>
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
-import {
-  getCasesByRegion,
-  getDeathsByRegion,
-  getRecoveredByRegion
-} from "@/api/datadista.js";
+import { getCasesByRegion, getDeathsByRegion, getRecoveredByRegion } from "@/api/datadista.js";
 import { calculateTrend } from "@/util.js";
 
 export default {
@@ -17,13 +13,13 @@ export default {
       map: {},
       geoJsonData: { type: "FeatureCollection", features: [] },
       covidCasesLayer: {},
-      infoControl: {}
+      infoControl: {},
     };
   },
   computed: {
     today: function() {
       return new Date().toLocaleDateString();
-    }
+    },
   },
   mounted() {
     this.init();
@@ -37,15 +33,12 @@ export default {
       this.addLegend();
     },
     addBaseMap() {
-      var CartoDB_DarkMatter = L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: "abcd",
-          maxZoom: 19
-        }
-      );
+      var CartoDB_DarkMatter = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19,
+      });
       CartoDB_DarkMatter.addTo(this.map);
     },
     addInfoControl() {
@@ -60,18 +53,9 @@ export default {
         if (!props) {
           this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
         } else {
-          var trendCases = calculateTrend(
-            props.cases.today,
-            props.cases.yesterday
-          );
-          var trendRecovered = calculateTrend(
-            props.recovered.today,
-            props.recovered.yesterday
-          );
-          var trendDeaths = calculateTrend(
-            props.deaths.today,
-            props.deaths.yesterday
-          );
+          var trendCases = calculateTrend(props.cases.today, props.cases.yesterday);
+          var trendRecovered = calculateTrend(props.recovered.today, props.recovered.yesterday);
+          var trendDeaths = calculateTrend(props.deaths.today, props.deaths.yesterday);
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
@@ -100,20 +84,16 @@ export default {
       };
       this.infoControl.addTo(this.map);
     },
-    loadGeojsonLayer(geojsonData) {
-      this.covidCasesLayer = L.geoJson(geojsonData, {
-        style: this.style,
-        onEachFeature: this.onEachFeature
-      }).addTo(this.map);
-    },
     async loadCovidDataOnLayer() {
       try {
+        this.$emit("statusLoading", true);
         var casesData = await getCasesByRegion();
         var deathsData = await getDeathsByRegion();
         var recoveredData = await getRecoveredByRegion();
 
         this.addData(casesData, recoveredData, deathsData);
         this.loadGeojsonLayer(this.geoJsonData);
+        this.$emit("statusLoading", false);
       } catch (err) {
         console.log(err);
       }
@@ -121,61 +101,32 @@ export default {
     addData(casesData, recoveredData, deathsData) {
       let self = this;
       for (let region of SPANISH_REGIONS_GEOJSON.features) {
-        var regionCasesRow = casesData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-        var regionDeathsRow = deathsData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-        var regionRecoveredRow = recoveredData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
+        var regionCasesRow = casesData.data.find((row) => row.cod_ine === region.properties.codigo);
+        var regionDeathsRow = deathsData.data.find((row) => row.cod_ine === region.properties.codigo);
+        var regionRecoveredRow = recoveredData.data.find((row) => row.cod_ine === region.properties.codigo);
 
         region.properties.cases = {
-          today:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 2
-              ]
-            ]
+          today: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 1]],
+          yesterday: regionCasesRow[Object.keys(regionCasesRow)[Object.keys(regionCasesRow).length - 2]],
         };
         region.properties.recovered = {
-          today:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 2
-              ]
-            ]
+          today: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 1]],
+          yesterday: regionRecoveredRow[Object.keys(regionRecoveredRow)[Object.keys(regionRecoveredRow).length - 2]],
         };
         region.properties.deaths = {
-          today:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 2
-              ]
-            ]
+          today: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 1]],
+          yesterday: regionDeathsRow[Object.keys(regionDeathsRow)[Object.keys(regionDeathsRow).length - 2]],
         };
         self.geoJsonData.features.push(region);
       }
     },
+    loadGeojsonLayer(geojsonData) {
+      this.covidCasesLayer = L.geoJson(geojsonData, {
+        style: this.style,
+        onEachFeature: this.onEachFeature,
+      }).addTo(this.map);
+    },
+
     addLegend() {
       let self = this;
       var legend = L.control({ position: "bottomright" });
@@ -184,7 +135,6 @@ export default {
         var div = L.DomUtil.create("div", "info legend"),
           grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
 
-        // loop through our density intervals and generate a label with a colored square for each interval
         div.innerHTML = "<h5 class='legend-title'>% Casos (24h)</h5>";
         for (var i = 0; i < grades.length; i++) {
           div.innerHTML +=
@@ -204,7 +154,7 @@ export default {
       layer.on({
         mouseover: this.highlightFeature,
         mouseout: this.resetHighlight,
-        click: this.clickFeature
+        click: this.clickFeature,
       });
     },
     clickFeature(e) {
@@ -218,7 +168,7 @@ export default {
         weight: 2,
         color: "#333",
         dashArray: "",
-        fillOpacity: 1
+        fillOpacity: 1,
       });
 
       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -231,17 +181,14 @@ export default {
       this.infoControl.update();
     },
     style(feature) {
-      let trend = calculateTrend(
-        feature.properties.cases.today,
-        feature.properties.cases.yesterday
-      );
+      let trend = calculateTrend(feature.properties.cases.today, feature.properties.cases.yesterday);
       return {
         fillColor: this.getColor(trend),
         weight: 1,
         opacity: 1,
         color: "white",
         dashArray: "1",
-        fillOpacity: 0.7
+        fillOpacity: 0.7,
       };
     },
     getColor(d) {
@@ -260,8 +207,8 @@ export default {
         : d > 1
         ? "#fee8c8"
         : "#fff7ec";
-    }
-  }
+    },
+  },
 };
 </script>
 
