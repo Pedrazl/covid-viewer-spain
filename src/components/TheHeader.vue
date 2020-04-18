@@ -11,50 +11,27 @@
           <div class="container">
             <h1 class="title">
               COVID-19
-            </h1>
-            <h2 class="subtitle">
-              Situación actual en España ({{ formattedDate }})
-            </h2>
+              <label class="version text-light"> v{{ version }}</label>
+            </h1>            
+            <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>
           </div>
         </div>
       </section>
     </div>
     <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-biohazard highlight-ico"></span>
-      <b-tooltip
-        label="Casos confirmados acumulados"
-        type="is-dark"
-        position="is-top"
-      >
-        <label class="highlight-data">
-          {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label
-        ></b-tooltip
+      <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
+        <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label></b-tooltip
       >
 
       <span class="mdi mdi-heart highlight-ico"></span>
-      <b-tooltip
-        label="Personas curadas acumuladas"
-        type="is-dark"
-        position="is-top"
-      >
-        <label class="highlight-data">
-          {{ formatNumbers(todayData.altas) }} (+{{
-            recoveredDifference
-          }})</label
-        >
+      <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-top">
+        <label class="highlight-data"> {{ formatNumbers(todayData.altas) }} (+{{ recoveredDifference }})</label>
       </b-tooltip>
 
       <span class="mdi mdi-grave-stone highlight-ico"></span>
-      <b-tooltip
-        label="Personas fallecidas acumuladas"
-        type="is-dark"
-        position="is-top"
-      >
-        <label class="highlight-data">
-          {{ formatNumbers(todayData.fallecimientos) }} (+{{
-            deathsDifference
-          }})</label
-        >
+      <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-top">
+        <label class="highlight-data"> {{ formatNumbers(todayData.fallecimientos) }} (+{{ deathsDifference }})</label>
       </b-tooltip>
     </div>
   </div>
@@ -66,22 +43,16 @@ export default {
   data() {
     return {
       todayData: {},
-      yesterdayData: {}
+      yesterdayData: {},
+      version: process.env.VERSION,
     };
   },
   computed: {
     dataLoaded() {
-      return (
-        Object.keys(this.todayData).length > 0 &&
-        Object.keys(this.yesterdayData).length > 0
-      );
+      return Object.keys(this.todayData).length > 0 && Object.keys(this.yesterdayData).length > 0;
     },
     formattedDate() {
-      return this.todayData.fecha !== ""
-        ? new Date(this.todayData.fecha)
-            .toLocaleString("es-ES", {})
-            .slice(0, 10)
-        : "";
+      return this.todayData.fecha !== "" ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10) : "";
     },
     casesDifference() {
       return this.todayData.casos - this.yesterdayData.casos;
@@ -91,7 +62,7 @@ export default {
     },
     deathsDifference() {
       return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
-    }
+    },
   },
   mounted() {
     this.init();
@@ -101,12 +72,12 @@ export default {
       this.loadCovidNationalData();
     },
     async loadCovidNationalData() {
-      try {       
-        this.$emit("statusLoading", true) ;
+      try {
+        this.$emit("statusLoading", true);
         var parsedData = await getNationalData();
         var lastDaysData = this.getLastTwoDaysData(parsedData.data);
         this.setData(lastDaysData[0], lastDaysData[1]);
-        this.$emit("statusLoading", false) ;
+        this.$emit("statusLoading", false);
       } catch (err) {
         console.log(err);
       }
@@ -125,8 +96,8 @@ export default {
     },
     formatNumbers(number) {
       return Number(number).toLocaleString("es-ES", {});
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -151,6 +122,14 @@ export default {
     color: black;
     justify-content: center;
   }
+}
+
+.version {
+  font-size: 0.6rem;
+}
+
+.text-light {
+  font-weight: 300;
 }
 
 .hero {
