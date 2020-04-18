@@ -19,7 +19,7 @@
       </section>
     </div>
     <div class="header__summary" v-if="dataLoaded">
-      <span class="mdi mdi-biohazard highlight-ico"></span>
+      <span class="mdi mdi-account-group highlight-ico"></span>
       <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
         <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label></b-tooltip
       >
