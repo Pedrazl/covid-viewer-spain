@@ -6,7 +6,7 @@ name: Deploy to github pages
   jobs:
     gh-pages-deploy:
       name: Deploying to gh-pages
-      runs-on: windows-10
+      runs-on: ubuntu-latest
       steps:
         - name: Setup Node.js for use with actions
           uses: actions/setup-node@v1.1.0
