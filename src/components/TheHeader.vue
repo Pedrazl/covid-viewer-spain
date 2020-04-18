@@ -12,7 +12,7 @@
             <h1 class="title">
               COVID-19
               <label class="version text-light"> v{{ version }}</label>
-            </h1>            
+            </h1>
             <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>
           </div>
         </div>
@@ -21,18 +21,21 @@
     <div class="header__summary" v-if="dataLoaded">
       <span class="mdi mdi-account-group highlight-ico"></span>
       <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} (+{{ casesDifference }})</label></b-tooltip
+        <label class="highlight-data"> {{ formatNumbers(todayData.casos) }} </label></b-tooltip
       >
+      <label class="sub-data">(+{{ casesDifference }})</label>
 
       <span class="mdi mdi-heart highlight-ico"></span>
       <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.altas) }} (+{{ recoveredDifference }})</label>
-      </b-tooltip>
+        <label class="highlight-data"> {{ formatNumbers(todayData.altas) }} </label></b-tooltip
+      >
+      <label class="sub-data"> (+{{ recoveredDifference }})</label>
 
       <span class="mdi mdi-grave-stone highlight-ico"></span>
       <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-top">
-        <label class="highlight-data"> {{ formatNumbers(todayData.fallecimientos) }} (+{{ deathsDifference }})</label>
-      </b-tooltip>
+        <label class="highlight-data"> {{ formatNumbers(todayData.fallecimientos) }}</label></b-tooltip
+      >
+      <label class="sub-data">(+{{ deathsDifference }})</label>
     </div>
   </div>
 </template>
@@ -139,8 +142,13 @@ export default {
 .highlight-data {
   font-size: 1rem;
   margin: 0.5rem;
+}
+
+.sub-data {
+  font-size: 0.8rem;
   margin-right: 1rem;
 }
+
 .highlight-ico {
   font-size: 40px;
 }
@@ -150,6 +158,9 @@ export default {
   .highlight-data {
     font-size: 1.5rem;
     margin: 0.5rem;
+  }
+  .sub-data {
+    font-size: 1rem;
     margin-right: 1rem;
   }
 }
@@ -166,7 +177,11 @@ export default {
 
   .highlight-data {
     font-size: 1.5rem;
-    margin: 1rem;
+    margin: 0.9rem;
+  }
+
+  .sub-data {
+    font-size: 1rem;
     margin-right: 3rem;
   }
 
@@ -190,7 +205,11 @@ export default {
 
   .highlight-data {
     font-size: 2.5rem;
-    margin: 1rem;
+    margin: 0.9rem;
+  }
+
+  .sub-data {
+    font-size: 2rem;
     margin-right: 3rem;
   }
 
