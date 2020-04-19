@@ -158,8 +158,11 @@ export default {
       });
     },
     clickFeature(e) {
-      this.resetHighlight(e);
-      this.highlightFeature(e);
+      var layer = e.target;
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+      }
+      this.infoControl.update(layer.feature.properties);
     },
     highlightFeature(e) {
       var layer = e.target;
