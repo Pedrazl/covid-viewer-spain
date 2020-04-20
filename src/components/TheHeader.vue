@@ -18,61 +18,17 @@
         </div>
       </section>
     </div>
-    <div class="header__summary" v-if="dataLoaded">
-      <div>
-        <div class="container-primary">
-          <span class="mdi mdi-account-group container-primary__ico"></span>
-          <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-bottom" size="is-small"
-            multilined>
-            <label class="container-primary__label"> {{ formatNumbers(todayData.casos) }} </label></b-tooltip
-          >
-          <label class="sub-data">(+{{ casesDifference }})</label>
-        </div>
-        <div class="container-secondary">
-          <i class="material-icons container-secondary__icon">{{ casesTrend > 0 ? "trending_up" : "trending_down" }}</i>
-          <label class="container-secondary__label">{{ casesTrend }}%</label>
-        </div>
-      </div>
-      <div>
-        <div class="container-primary">
-          <span class="mdi mdi-heart container-primary__ico"></span>
-          <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-bottom" size="is-small"
-            multilined>
-            <label class="container-primary__label"> {{ formatNumbers(todayData.altas) }} </label></b-tooltip
-          >
-          <label class="sub-data"> (+{{ recoveredDifference }})</label>
-        </div>
-        <div class="container-secondary">
-          <i class="material-icons container-secondary__icon">{{
-            recoveredTrend > 0 ? "trending_up" : "trending_down"
-          }}</i>
-          <label class="container-secondary__label">{{ recoveredTrend }}%</label>
-        </div>
-      </div>
-      <div>
-        <div class="container-primary">
-          <span class="mdi mdi-grave-stone container-primary__ico"></span>
-          <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-bottom" size="is-small"
-            multilined>
-            <label class="container-primary__label"> {{ formatNumbers(todayData.fallecimientos) }}</label></b-tooltip
-          >
-          <label class="sub-data">(+{{ deathsDifference }})</label>
-        </div>
-        <div class="container-secondary">
-          <i class="material-icons container-secondary__icon">{{
-            deathsTrend > 0 ? "trending_up" : "trending_down"
-          }}</i>
-          <label class="container-secondary__label">{{ deathsTrend }}%</label>
-        </div>
-      </div>
-    </div>
+    <stats-dashboard v-if="dataLoaded" :todayData="todayData" :yesterdayData="yesterdayData"> </stats-dashboard>
   </div>
 </template>
 <script>
 import { getNationalData } from "@/api/datadista.js";
-import { calculateTrend } from "@/util.js";
+import StatsDashboard from "@/components/StatsDashboard";
 
 export default {
+  components: {
+    StatsDashboard,
+  },
   data() {
     return {
       todayData: {},
@@ -86,25 +42,7 @@ export default {
     },
     formattedDate() {
       return this.todayData.fecha !== "" ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10) : "";
-    },
-    casesDifference() {
-      return this.todayData.casos - this.yesterdayData.casos;
-    },
-    casesTrend() {
-      return calculateTrend(this.todayData.casos, this.yesterdayData.casos);
-    },
-    recoveredDifference() {
-      return this.todayData.altas - this.yesterdayData.altas;
-    },
-    recoveredTrend() {
-      return calculateTrend(this.todayData.altas, this.yesterdayData.altas);
-    },
-    deathsDifference() {
-      return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
-    },
-    deathsTrend() {
-      return calculateTrend(this.todayData.fallecimientos, this.yesterdayData.fallecimientos);
-    },
+    }    
   },
   mounted() {
     this.init();
@@ -135,10 +73,7 @@ export default {
     setData(todayData, yesterdayData) {
       this.todayData = todayData;
       this.yesterdayData = yesterdayData;
-    },
-    formatNumbers(number) {
-      return Number(number).toLocaleString("es-ES", {});
-    },
+    }   
   },
 };
 </script>
@@ -152,43 +87,8 @@ export default {
   &__title {
     text-align: center;
     padding: 0.4rem;
-  }
-  &__summary {
-    display: flex;
-    padding-top: 1.5rem;
-    align-items: center;
-    color: black;
-    justify-content: space-evenly;
-  }
-  &__trends {
-    display: flex;
-    padding-top: 1rem;
-    align-items: center;
-    color: black;
-    justify-content: center;
-  }
-}
-
-.container-primary {
-  &__ico {
-    font-size: 25px;
-  }
-  &__label {
-    font-size: 1rem;
-    margin: 0.5rem;
-  }
-}
-
-.container-secondary {
-  text-align: center;
-  &__icon {
-    vertical-align: bottom;
-    margin-right: 0.5rem;
-  }
-  &__label {
-    font-size: 1rem;
-  }
-}
+  } 
+} 
 
 .sub-data {
   font-size: 0.5rem;
@@ -211,27 +111,12 @@ export default {
   font-size: 0.9rem;
 }
 
-.b-tooltip{
+.b-tooltip {
   z-index: 5001;
 }
 
 /* Non-mobile styles, 750px breakpoint (tablets) */
 @media only screen and (min-width: $breakpoint-movilToTablet) {
-  .container-primary {    
-    &__label {
-      font-size: 1.5rem;
-      margin: 0.5rem;
-    }
-  }
-  .container-secondary {    
-    &__icon {
-      margin-bottom: 0.2rem;
-      margin-right: 0.2rem;      
-    }
-    &__label {
-      font-size: 1.2rem;
-    }
-  }
   .sub-data {
     font-size: 1rem;
     margin-right: 1rem;
@@ -242,31 +127,10 @@ export default {
   .header {
     display: grid;
     grid-template-columns: 0.4fr 1fr;
-    grid-template-rows: 1fr;
-    &__summary {
-      padding-top: 0;
-    }
-  }
-  .container-primary {
-    &__ico {
-      font-size: 40px;
-    }
-    &__label {
-      font-size: 1.5rem;
-      margin: 0.9rem;
-    }
-  }
-  .container-secondary {    
-    &__icon {      
-      margin-bottom: 5px;
-      margin-right: 0.5rem;
-    }
-    &__label {
-      font-size: 1.4rem;
-    }
-  }
+    grid-template-rows: 1fr;   
+  } 
 
-  .sub-data {    
+  .sub-data {
     margin-right: 3rem;
   }
 
@@ -279,26 +143,8 @@ export default {
   }
 }
 @media only screen and (min-width: $breakpoint-desktopToHighResolution) {
-  .container-primary {
-    &__label {
-      font-size: 2.5rem;
-      margin: 0.9rem;
-    }
-  }
-
-  .container-secondary {    
-    &__icon {
-      font-size: 1.8rem;  
-      margin-bottom: 10px;
-      margin-right: 0.8rem;
-    }
-    &__label {
-      font-size: 2rem;
-    }
-  }
-
   .sub-data {
-    font-size: 2rem;    
+    font-size: 2rem;
   }
 
   .header-mobile {
