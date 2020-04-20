@@ -42,7 +42,7 @@ export default {
     },
     formattedDate() {
       return this.todayData.fecha !== "" ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10) : "";
-    }    
+    },
   },
   mounted() {
     this.init();
@@ -73,7 +73,7 @@ export default {
     setData(todayData, yesterdayData) {
       this.todayData = todayData;
       this.yesterdayData = yesterdayData;
-    }   
+    },
   },
 };
 </script>
@@ -87,12 +87,7 @@ export default {
   &__title {
     text-align: center;
     padding: 0.4rem;
-  } 
-} 
-
-.sub-data {
-  font-size: 0.5rem;
-  margin-right: 0.4rem;
+  }
 }
 
 .version {
@@ -115,23 +110,11 @@ export default {
   z-index: 5001;
 }
 
-/* Non-mobile styles, 750px breakpoint (tablets) */
-@media only screen and (min-width: $breakpoint-movilToTablet) {
-  .sub-data {
-    font-size: 1rem;
-    margin-right: 1rem;
-  }
-}
-
 @media only screen and (min-width: $breakpoint-tabletToDesktop) {
   .header {
     display: grid;
     grid-template-columns: 0.4fr 1fr;
-    grid-template-rows: 1fr;   
-  } 
-
-  .sub-data {
-    margin-right: 3rem;
+    grid-template-rows: 1fr;
   }
 
   .header-mobile {
@@ -143,10 +126,6 @@ export default {
   }
 }
 @media only screen and (min-width: $breakpoint-desktopToHighResolution) {
-  .sub-data {
-    font-size: 2rem;
-  }
-
   .header-mobile {
     display: none;
   }
