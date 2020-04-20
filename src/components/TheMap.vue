@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     init() {
-      this.map = L.map("map").setView([40.505, -3.09], 6);
+      this.map = L.map("map").setView([37.505, -3.09], 5);
       this.addBaseMap();
       this.addInfoControl();
       this.loadCovidDataOnLayer();
@@ -158,8 +158,11 @@ export default {
       });
     },
     clickFeature(e) {
-      this.resetHighlight(e);
-      this.highlightFeature(e);
+      var layer = e.target;
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+      }
+      this.infoControl.update(layer.feature.properties);
     },
     highlightFeature(e) {
       var layer = e.target;
