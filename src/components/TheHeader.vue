@@ -3,7 +3,7 @@
     <div class="header__title">
       <section class="header-mobile">
         <h3 class="subtitle is-3">
-          COVID-19 <label class="small"> - {{ formattedDate }}-</label>
+          COVID-19 <label class="small"> - actualizado {{ formattedDate }}-</label>
         </h3>
       </section>
       <section class="hero is-light">
@@ -22,7 +22,8 @@
       <div>
         <div class="container-primary">
           <span class="mdi mdi-account-group container-primary__ico"></span>
-          <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-top">
+          <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-bottom" size="is-small"
+            multilined>
             <label class="container-primary__label"> {{ formatNumbers(todayData.casos) }} </label></b-tooltip
           >
           <label class="sub-data">(+{{ casesDifference }})</label>
@@ -35,7 +36,8 @@
       <div>
         <div class="container-primary">
           <span class="mdi mdi-heart container-primary__ico"></span>
-          <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-top">
+          <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-bottom" size="is-small"
+            multilined>
             <label class="container-primary__label"> {{ formatNumbers(todayData.altas) }} </label></b-tooltip
           >
           <label class="sub-data"> (+{{ recoveredDifference }})</label>
@@ -50,7 +52,8 @@
       <div>
         <div class="container-primary">
           <span class="mdi mdi-grave-stone container-primary__ico"></span>
-          <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-top">
+          <b-tooltip label="Personas fallecidas acumuladas" type="is-dark" position="is-bottom" size="is-small"
+            multilined>
             <label class="container-primary__label"> {{ formatNumbers(todayData.fallecimientos) }}</label></b-tooltip
           >
           <label class="sub-data">(+{{ deathsDifference }})</label>
@@ -140,10 +143,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.small {
-  font-size: 0.9rem;
-}
-
 .header {
   display: grid;
   grid-template-columns: 1fr;
@@ -152,15 +151,14 @@ export default {
   padding-left: 1rem;
   &__title {
     text-align: center;
-    padding: 0.5rem;
+    padding: 0.4rem;
   }
   &__summary {
     display: flex;
-
-    padding-top: 1rem;
+    padding-top: 1.5rem;
     align-items: center;
     color: black;
-    justify-content: center;
+    justify-content: space-evenly;
   }
   &__trends {
     display: flex;
@@ -171,21 +169,9 @@ export default {
   }
 }
 
-.version {
-  font-size: 0.6rem;
-}
-
-.text-light {
-  font-weight: 300;
-}
-
-.hero {
-  display: none !important;
-}
-
 .container-primary {
   &__ico {
-    font-size: 40px;
+    font-size: 25px;
   }
   &__label {
     font-size: 1rem;
@@ -205,29 +191,45 @@ export default {
 }
 
 .sub-data {
-  font-size: 0.8rem;
-  margin-right: 1rem;
+  font-size: 0.5rem;
+  margin-right: 0.4rem;
 }
 
-/* Non-mobile styles, 750px breakpoint */
+.version {
+  font-size: 0.6rem;
+}
+
+.text-light {
+  font-weight: 300;
+}
+
+.hero {
+  display: none !important;
+}
+
+.small {
+  font-size: 0.9rem;
+}
+
+.b-tooltip{
+  z-index: 5001;
+}
+
+/* Non-mobile styles, 750px breakpoint (tablets) */
 @media only screen and (min-width: $breakpoint-movilToTablet) {
-  .container-primary {
-    &__ico {
-      font-size: 40px;
-    }
+  .container-primary {    
     &__label {
       font-size: 1.5rem;
       margin: 0.5rem;
     }
   }
-  .container-secondary {
-    text-align: center;
+  .container-secondary {    
     &__icon {
-      vertical-align: bottom;
-      margin-right: 0.5rem;
+      margin-bottom: 0.2rem;
+      margin-right: 0.2rem;      
     }
     &__label {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
   }
   .sub-data {
@@ -254,8 +256,7 @@ export default {
       margin: 0.9rem;
     }
   }
-  .container-secondary {
-    text-align: center;
+  .container-secondary {    
     &__icon {      
       margin-bottom: 5px;
       margin-right: 0.5rem;
@@ -265,8 +266,7 @@ export default {
     }
   }
 
-  .sub-data {
-    font-size: 1rem;
+  .sub-data {    
     margin-right: 3rem;
   }
 
@@ -279,27 +279,14 @@ export default {
   }
 }
 @media only screen and (min-width: $breakpoint-desktopToHighResolution) {
-  .header {
-    display: grid;
-    grid-template-columns: 0.4fr 1fr;
-    grid-template-rows: 1fr;
-    &__summary {
-      padding-top: 0;
-    }
-  }
-
   .container-primary {
-    &__ico {
-      font-size: 40px;
-    }
     &__label {
       font-size: 2.5rem;
       margin: 0.9rem;
     }
   }
 
-  .container-secondary {
-    text-align: center;
+  .container-secondary {    
     &__icon {
       font-size: 1.8rem;  
       margin-bottom: 10px;
@@ -311,8 +298,7 @@ export default {
   }
 
   .sub-data {
-    font-size: 2rem;
-    margin-right: 3rem;
+    font-size: 2rem;    
   }
 
   .header-mobile {
