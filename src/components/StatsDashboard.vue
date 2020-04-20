@@ -5,12 +5,12 @@
         <span class="mdi mdi-account-group container-primary__ico"></span>
         <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-bottom" size="is-small" multilined>
           <label class="container-primary__label"> {{ formatNumbers(todayData.casos) }} </label></b-tooltip
-        >
-        <label class="sub-data">(+{{ casesDifference }})</label>
+        >        
       </div>
       <div class="container-secondary">
         <i class="material-icons container-secondary__icon">{{ casesTrend > 0 ? "trending_up" : "trending_down" }}</i>
         <label class="container-secondary__label">{{ casesTrend }}%</label>
+        <label class="container-secondary__small-label">(+{{ casesDifference }})</label>
       </div>
     </div>
     <div>
@@ -18,14 +18,14 @@
         <span class="mdi mdi-heart container-primary__ico"></span>
         <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-bottom" size="is-small" multilined>
           <label class="container-primary__label"> {{ formatNumbers(todayData.altas) }} </label></b-tooltip
-        >
-        <label class="sub-data"> (+{{ recoveredDifference }})</label>
+        >        
       </div>
       <div class="container-secondary">
         <i class="material-icons container-secondary__icon">{{
           recoveredTrend > 0 ? "trending_up" : "trending_down"
         }}</i>
         <label class="container-secondary__label">{{ recoveredTrend }}%</label>
+        <label class="container-secondary__small-label"> (+{{ recoveredDifference }})</label>
       </div>
     </div>
     <div>
@@ -40,11 +40,12 @@
         >
           <label class="container-primary__label"> {{ formatNumbers(todayData.fallecimientos) }}</label></b-tooltip
         >
-        <label class="sub-data">(+{{ deathsDifference }})</label>
+        
       </div>
       <div class="container-secondary">
         <i class="material-icons container-secondary__icon">{{ deathsTrend > 0 ? "trending_up" : "trending_down" }}</i>
         <label class="container-secondary__label">{{ deathsTrend }}%</label>
+        <label class="container-secondary__small-label">(+{{ deathsDifference }})</label>
       </div>
     </div>
   </div>
@@ -103,11 +104,12 @@ export default {
     padding-top: 1rem;
     align-items: center;
     color: black;
-    justify-content: center;
+    justify-content: space-evenly;
   }
 }
 
 .container-primary {
+    margin-top: 0.8rem;
   &__ico {
     font-size: 25px;
   }
@@ -117,14 +119,17 @@ export default {
   }
 }
 
-.container-secondary {
-  text-align: center;
-  &__icon {
-    vertical-align: bottom;
-    margin-right: 0.5rem;
+.container-secondary {  
+  &__icon {    
+    margin-right: 0.2rem;
+    vertical-align: middle;
   }
   &__label {
     font-size: 1rem;
+  }
+  &__small-label{
+      margin-left: 0.1rem;
+      font-size: 0.6rem;
   }
 }
 
@@ -138,12 +143,15 @@ export default {
   }
   .container-secondary {
     &__icon {
-      margin-bottom: 0.2rem;
-      margin-right: 0.2rem;
+        margin-bottom: 5px;            
     }
     &__label {
       font-size: 1.2rem;
     }
+    &__small-label{
+      margin-left: 0.2rem;
+      font-size: 0.8rem;
+  }
   }
 }
 
@@ -154,6 +162,7 @@ export default {
     }
   }
   .container-primary {
+      margin-top: 0;
     &__ico {
       font-size: 40px;
     }
@@ -164,12 +173,16 @@ export default {
   }
   .container-secondary {
     &__icon {
-      margin-bottom: 5px;
+      margin-bottom: 7px;
       margin-right: 0.5rem;
     }
     &__label {
       font-size: 1.4rem;
     }
+    &__small-label{
+      margin-left: 0.5rem;
+      font-size: 1rem;
+  }
   }  
 }
 
@@ -190,6 +203,10 @@ export default {
     &__label {
       font-size: 2rem;
     }
+    &__small-label{
+      margin-left: 0.5rem;
+      font-size: 1.5rem;
+  }
   }
 }
 
