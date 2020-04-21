@@ -1,6 +1,6 @@
 <template>
   <div class="header__summary">
-    <div>
+    <div @click="activateLayer('cases')">
       <div class="container-primary">
         <span class="mdi mdi-account-group container-primary__ico"></span>
         <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-bottom" size="is-small" multilined>
@@ -84,9 +84,12 @@ export default {
     },
   },
   methods: {
+    activateLayer(layerName){
+      alert(`Activar capa ${layerName}`);
+    },
     formatNumbers(number) {
       return Number(number).toLocaleString("es-ES", {});
-    },
+    }    
   },
 };
 </script>
