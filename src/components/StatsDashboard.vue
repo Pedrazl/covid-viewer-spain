@@ -3,29 +3,51 @@
     <div @click="activateLayer('cases')">
       <div class="container-primary">
         <span class="mdi mdi-account-group container-primary__ico"></span>
-        <b-tooltip label="Casos confirmados acumulados" type="is-dark" position="is-bottom" size="is-small" multilined>
-          <label class="container-primary__label"> {{ formatNumbers(todayData.casos) }} </label></b-tooltip
-        >        
+        <b-tooltip
+          label="Casos confirmados acumulados"
+          type="is-dark"
+          position="is-bottom"
+          size="is-small"
+          multilined
+        >
+          <label class="container-primary__label">
+            {{ formatNumbers(todayData.casos) }}
+          </label></b-tooltip
+        >
       </div>
       <div class="container-secondary">
-        <i class="material-icons container-secondary__icon">{{ casesTrend > 0 ? "trending_up" : "trending_down" }}</i>
+        <i class="material-icons container-secondary__icon">{{
+          casesTrend > 0 ? "trending_up" : "trending_down"
+        }}</i>
         <label class="container-secondary__label">{{ casesTrend }}%</label>
-        <label class="container-secondary__small-label">(+{{ casesDifference }})</label>
+        <label class="container-secondary__small-label"
+          >(+{{ casesDifference }})</label
+        >
       </div>
     </div>
     <div>
       <div class="container-primary">
         <span class="mdi mdi-heart container-primary__ico"></span>
-        <b-tooltip label="Personas curadas acumuladas" type="is-dark" position="is-bottom" size="is-small" multilined>
-          <label class="container-primary__label"> {{ formatNumbers(todayData.altas) }} </label></b-tooltip
-        >        
+        <b-tooltip
+          label="Personas curadas acumuladas"
+          type="is-dark"
+          position="is-bottom"
+          size="is-small"
+          multilined
+        >
+          <label class="container-primary__label">
+            {{ formatNumbers(todayData.altas) }}
+          </label></b-tooltip
+        >
       </div>
       <div class="container-secondary">
         <i class="material-icons container-secondary__icon">{{
           recoveredTrend > 0 ? "trending_up" : "trending_down"
         }}</i>
         <label class="container-secondary__label">{{ recoveredTrend }}%</label>
-        <label class="container-secondary__small-label"> (+{{ recoveredDifference }})</label>
+        <label class="container-secondary__small-label">
+          (+{{ recoveredDifference }})</label
+        >
       </div>
     </div>
     <div>
@@ -38,14 +60,19 @@
           size="is-small"
           multilined
         >
-          <label class="container-primary__label"> {{ formatNumbers(todayData.fallecimientos) }}</label></b-tooltip
+          <label class="container-primary__label">
+            {{ formatNumbers(todayData.fallecimientos) }}</label
+          ></b-tooltip
         >
-        
       </div>
       <div class="container-secondary">
-        <i class="material-icons container-secondary__icon">{{ deathsTrend > 0 ? "trending_up" : "trending_down" }}</i>
+        <i class="material-icons container-secondary__icon">{{
+          deathsTrend > 0 ? "trending_up" : "trending_down"
+        }}</i>
         <label class="container-secondary__label">{{ deathsTrend }}%</label>
-        <label class="container-secondary__small-label">(+{{ deathsDifference }})</label>
+        <label class="container-secondary__small-label"
+          >(+{{ deathsDifference }})</label
+        >
       </div>
     </div>
   </div>
@@ -56,12 +83,12 @@ export default {
   props: {
     todayData: {
       type: Object,
-      required: true,
+      required: true
     },
     yesterdayData: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
     casesDifference() {
@@ -80,17 +107,20 @@ export default {
       return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
     },
     deathsTrend() {
-      return calculateTrend(this.todayData.fallecimientos, this.yesterdayData.fallecimientos);
-    },
+      return calculateTrend(
+        this.todayData.fallecimientos,
+        this.yesterdayData.fallecimientos
+      );
+    }
   },
   methods: {
-    activateLayer(layerName){
+    activateLayer(layerName) {
       alert(`Activar capa ${layerName}`);
     },
     formatNumbers(number) {
       return Number(number).toLocaleString("es-ES", {});
-    }    
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -112,7 +142,7 @@ export default {
 }
 
 .container-primary {
-    margin-top: 0.8rem;
+  margin-top: 0.8rem;
   &__ico {
     font-size: 25px;
   }
@@ -122,17 +152,17 @@ export default {
   }
 }
 
-.container-secondary {  
-  &__icon {    
+.container-secondary {
+  &__icon {
     margin-right: 0.2rem;
     vertical-align: middle;
   }
   &__label {
     font-size: 1rem;
   }
-  &__small-label{
-      margin-left: 0.1rem;
-      font-size: 0.6rem;
+  &__small-label {
+    margin-left: 0.1rem;
+    font-size: 0.6rem;
   }
 }
 
@@ -146,26 +176,26 @@ export default {
   }
   .container-secondary {
     &__icon {
-        margin-bottom: 5px;            
+      margin-bottom: 5px;
     }
     &__label {
       font-size: 1.2rem;
     }
-    &__small-label{
+    &__small-label {
       margin-left: 0.2rem;
       font-size: 0.8rem;
-  }
+    }
   }
 }
 
 @media only screen and (min-width: $breakpoint-tabletToDesktop) {
-  .header {    
+  .header {
     &__summary {
       padding-top: 0;
     }
   }
   .container-primary {
-      margin-top: 0;
+    margin-top: 0;
     &__ico {
       font-size: 40px;
     }
@@ -182,11 +212,11 @@ export default {
     &__label {
       font-size: 1.4rem;
     }
-    &__small-label{
+    &__small-label {
       margin-left: 0.5rem;
       font-size: 1rem;
+    }
   }
-  }  
 }
 
 @media only screen and (min-width: $breakpoint-desktopToHighResolution) {
@@ -206,11 +236,10 @@ export default {
     &__label {
       font-size: 2rem;
     }
-    &__small-label{
+    &__small-label {
       margin-left: 0.5rem;
       font-size: 1.5rem;
-  }
+    }
   }
 }
-
 </style>

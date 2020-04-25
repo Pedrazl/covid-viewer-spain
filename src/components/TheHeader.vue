@@ -3,7 +3,8 @@
     <div class="header__title">
       <section class="header-mobile">
         <h3 class="subtitle is-3">
-          COVID-19 <label class="small"> - actualizado {{ formattedDate }}-</label>
+          COVID-19
+          <label class="small"> - actualizado {{ formattedDate }}-</label>
         </h3>
       </section>
       <section class="hero is-light">
@@ -13,68 +14,48 @@
               COVID-19
               <label class="version text-light"> v{{ version }}</label>
             </h1>
-            <h2 class="subtitle">Situación actual en España ({{ formattedDate }})</h2>
+            <h2 class="subtitle">
+              Situación actual en España ({{ formattedDate }})
+            </h2>
           </div>
         </div>
       </section>
     </div>
-    <stats-dashboard v-if="dataLoaded" :todayData="todayData" :yesterdayData="yesterdayData"> </stats-dashboard>
+    <stats-dashboard      
+      :todayData="nationalTodayData"
+      :yesterdayData="nationalYesterdayData"
+    >
+    </stats-dashboard>
   </div>
 </template>
 <script>
-import { getNationalData } from "@/api/datadista.js";
 import StatsDashboard from "@/components/StatsDashboard";
+import { mapState } from "vuex";
 
 export default {
   components: {
-    StatsDashboard,
+    StatsDashboard
   },
   data() {
     return {
-      todayData: {},
-      yesterdayData: {},
-      version: process.env.VERSION,
+      version: process.env.VERSION
     };
   },
   computed: {
-    dataLoaded() {
-      return Object.keys(this.todayData).length > 0 && Object.keys(this.yesterdayData).length > 0;
-    },
-    formattedDate() {
-      return this.todayData.fecha !== "" ? new Date(this.todayData.fecha).toLocaleString("es-ES", {}).slice(0, 10) : "";
-    },
-  },
-  mounted() {
-    this.init();
-  },
-  methods: {
-    init() {
-      this.loadCovidNationalData();
-    },
-    async loadCovidNationalData() {
-      try {
-        this.$emit("statusLoading", true);
-        var parsedData = await getNationalData();
-        var lastDaysData = this.getLastTwoDaysData(parsedData.data);
-        this.setData(lastDaysData[0], lastDaysData[1]);
-        this.$emit("statusLoading", false);
-      } catch (err) {
-        console.log(err);
+    ...mapState({
+      nationalTodayData: state => state.nationalData.today,
+      nationalYesterdayData: state => state.nationalData.yesterday
+    }),
+    formattedDate() {      
+        return this.nationalTodayData.fecha && this.nationalTodayData.fecha !== ""
+          ? new Date(this.nationalTodayData.fecha)
+              .toLocaleString("es-ES", {})
+              .slice(0, 10)
+          : "";
       }
-    },
-    getLastTwoDaysData(serieData) {
-      for (let i = serieData.length - 1; i > 0; i--) {
-        if (serieData[i].fecha !== "") {
-          return [serieData[i], serieData[i - 1]];
-        }
-      }
-      return null;
-    },
-    setData(todayData, yesterdayData) {
-      this.todayData = todayData;
-      this.yesterdayData = yesterdayData;
-    },
-  },
+      
+    
+  }
 };
 </script>
 <style lang="scss">
