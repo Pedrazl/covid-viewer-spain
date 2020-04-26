@@ -165,37 +165,6 @@ export default {
   color: #777;
 }
 
-.red {
-  color: rgb(190, 7, 7);
-}
-.green {
-  color: rgb(10, 121, 10);
-}
-
-.blue {
-  color: rgb(15, 80, 202);
-}
-
-.legend {
-  // line-height: 18px;
-  color: #555;
-  &__label {
-    font-size: 1rem;
-  }
-}
-.legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-  opacity: 0.7;
-}
-
-.legend-title {
-  font-size: 1.2rem;
-  padding-bottom: 0.5rem;
-}
-
 @media only screen and (min-width: $breakpoint-tabletToDesktop) {
   .map-container {
     height: calc(100vh - 170px);
