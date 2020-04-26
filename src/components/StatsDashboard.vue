@@ -1,69 +1,85 @@
 <template>
   <div class="header__summary">
-    <div @click="activateLayer('cases')">
-      <div class="container-primary">
-        <span class="mdi mdi-account-group container-primary__ico"></span>
-        <b-tooltip
-          label="Casos confirmados acumulados"
-          type="is-dark"
-          position="is-bottom"
-          size="is-small"
-          multilined
-        >
+    <b-tooltip
+      label="Click para ver nº de Casos Confirmados"
+      type="is-dark"
+      position="is-bottom"
+      size="is-small"
+      multilined
+    >
+      <div
+        class="layer-switcher"
+        :class="activeLayer === 'cases' ? 'selected__cases' : ''"
+        @click="setActiveLayer('cases')"
+      >
+        <div class="container-primary">
+          <span class="mdi mdi-account-group container-primary__ico"></span>
+
           <label class="container-primary__label">
             {{ formatNumbers(todayData.casos) }}
-          </label></b-tooltip
-        >
+          </label>
+        </div>
+        <div class="container-secondary">
+          <i class="material-icons container-secondary__icon">{{
+            casesTrend > 0 ? "trending_up" : "trending_down"
+          }}</i>
+          <label class="container-secondary__label">{{ casesTrend }}%</label>
+          <label class="container-secondary__small-label"
+            >(+{{ casesDifference }})</label
+          >
+        </div>
       </div>
-      <div class="container-secondary">
-        <i class="material-icons container-secondary__icon">{{
-          casesTrend > 0 ? "trending_up" : "trending_down"
-        }}</i>
-        <label class="container-secondary__label">{{ casesTrend }}%</label>
-        <label class="container-secondary__small-label"
-          >(+{{ casesDifference }})</label
-        >
-      </div>
-    </div>
-    <div>
-      <div class="container-primary">
-        <span class="mdi mdi-heart container-primary__ico"></span>
-        <b-tooltip
-          label="Personas curadas acumuladas"
-          type="is-dark"
-          position="is-bottom"
-          size="is-small"
-          multilined
-        >
+    </b-tooltip>
+    <b-tooltip
+      label="Click para ver nº de Personas Curadas"
+      type="is-dark"
+      position="is-bottom"
+      size="is-small"
+      multilined
+    >
+      <div
+        class="layer-switcher"
+        :class="activeLayer === 'recovered' ? 'selected__recovered' : ''"
+        @click="setActiveLayer('recovered')"
+      >
+        <div class="container-primary">
+          <span class="mdi mdi-heart container-primary__ico"></span>
+
           <label class="container-primary__label">
             {{ formatNumbers(todayData.altas) }}
-          </label></b-tooltip
-        >
+          </label>
+        </div>
+        <div class="container-secondary">
+          <i class="material-icons container-secondary__icon">{{
+            recoveredTrend > 0 ? "trending_up" : "trending_down"
+          }}</i>
+          <label class="container-secondary__label"
+            >{{ recoveredTrend }}%</label
+          >
+          <label class="container-secondary__small-label">
+            (+{{ recoveredDifference }})</label
+          >
+        </div>
       </div>
-      <div class="container-secondary">
-        <i class="material-icons container-secondary__icon">{{
-          recoveredTrend > 0 ? "trending_up" : "trending_down"
-        }}</i>
-        <label class="container-secondary__label">{{ recoveredTrend }}%</label>
-        <label class="container-secondary__small-label">
-          (+{{ recoveredDifference }})</label
-        >
-      </div>
-    </div>
-    <div>
-      <div class="container-primary">
-        <span class="mdi mdi-grave-stone container-primary__ico"></span>
-        <b-tooltip
-          label="Personas fallecidas acumuladas"
+    </b-tooltip>
+    <b-tooltip
+          label="Click para ver nº de Personas Fallecidas"
           type="is-dark"
           position="is-bottom"
           size="is-small"
           multilined
         >
+    <div
+      class="layer-switcher"
+      :class="activeLayer === 'deaths' ? 'selected__deaths' : ''"
+      @click="setActiveLayer('deaths')"
+    >
+      <div class="container-primary">
+        <span class="mdi mdi-grave-stone container-primary__ico"></span>
+        
           <label class="container-primary__label">
             {{ formatNumbers(todayData.fallecimientos) }}</label
-          ></b-tooltip
-        >
+          >
       </div>
       <div class="container-secondary">
         <i class="material-icons container-secondary__icon">{{
@@ -75,10 +91,14 @@
         >
       </div>
     </div>
+    </b-tooltip
+        >
   </div>
 </template>
 <script>
 import { calculateTrend } from "@/util.js";
+import { mapState, mapActions } from "vuex";
+
 export default {
   props: {
     todayData: {
@@ -91,6 +111,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      activeLayer: state => state.activeLayer
+    }),
     casesDifference() {
       return this.todayData.casos - this.yesterdayData.casos;
     },
@@ -114,9 +137,9 @@ export default {
     }
   },
   methods: {
-    activateLayer(layerName) {
-      alert(`Activar capa ${layerName}`);
-    },
+    ...mapActions({
+      setActiveLayer: "setActiveLayer"
+    }),
     formatNumbers(number) {
       return Number(number).toLocaleString("es-ES", {});
     }
@@ -138,6 +161,21 @@ export default {
     align-items: center;
     color: black;
     justify-content: space-evenly;
+  }
+}
+
+.layer-switcher:hover {
+  cursor: pointer;
+}
+.selected {
+  &__cases {
+    color: #f4a21d;
+  }
+  &__recovered {
+    color: #22c65b;
+  }
+  &__deaths {
+    color: #f64165;
   }
 }
 
