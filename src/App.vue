@@ -1,16 +1,13 @@
 <template>
   <div id="app" class="wrapper">
-    <header>
-      <the-header></the-header>
-    </header>
-    <main>
-      <the-map v-if="dataReady" />
-      <app-data-loader
-        @statusLoading="setLoading"
-        @data-load-ready="onDataLoad"
-        @data-load-error="onDataLoadError"
-      />
-    </main>
+    <the-header></the-header>
+    <the-map v-if="dataReady" />
+
+    <app-data-loader
+      @statusLoading="setLoading"
+      @data-load-ready="onDataLoad"
+      @data-load-error="onDataLoadError"
+    />
     <b-loading
       :is-full-page="isFullPage"
       :active.sync="isLoading"
