@@ -1,7 +1,7 @@
 <template>
   <div class="header__summary">
     <b-tooltip
-      label="Click para ver nº de Casos Confirmados"
+      label="Nº de Casos Confirmados"
       type="is-dark"
       position="is-bottom"
       size="is-small"
@@ -31,7 +31,7 @@
       </div>
     </b-tooltip>
     <b-tooltip
-      label="Click para ver nº de Personas Curadas"
+      label="Nº de Personas Curadas"
       type="is-dark"
       position="is-bottom"
       size="is-small"
@@ -63,7 +63,7 @@
       </div>
     </b-tooltip>
     <b-tooltip
-      label="Click para ver nº de Personas Fallecidas"
+      label="Nº de Personas Fallecidas"
       type="is-dark"
       position="is-bottom"
       size="is-small"
