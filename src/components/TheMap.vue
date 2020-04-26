@@ -1,13 +1,15 @@
 <template>
   <div class="map-container" id="map">
-    <geojson-layer v-if="layerDataReady" :geojson="geoJsonData"></geojson-layer>
+    <geojson-layer v-if="layerDataReady"
+     :key="activeLayer" 
+     :geojson="geoJsonData"
+     :layerName="activeLayer"></geojson-layer>
   </div>
 </template>
 <script>
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import GeojsonLayer from "@/components/GeojsonLayer";
-import { getColor } from "@/util.js";
 import { mapState } from 'vuex';
 
 export default {
@@ -17,13 +19,13 @@ export default {
   data() {
     return {
       map: {},
-      geoJsonData: { type: "FeatureCollection", features: [] },
-      covidCasesLayer: {},
+      geoJsonData: { type: "FeatureCollection", features: [] },      
       infoControl: {}
     };
   },
   computed: {
     ...mapState({
+      activeLayer: state => state.activeLayer,
       regionalData: state => state.regionalData      
     }),
     today: function() {
@@ -32,7 +34,7 @@ export default {
     layerDataReady: function() {
       return this.geoJsonData.features.length > 0;
     }
-  },
+  },  
   mounted() {
     this.init();
   },
@@ -41,8 +43,7 @@ export default {
       this.map = L.map("map").setView([37.505, -3.09], 5);
       this.addBaseMap();
       this.addInfoControl();
-      this.addFeatures(this.regionalData.cases, this.regionalData.recovered, this.regionalData.deaths);
-      this.addLegend();
+      this.addFeatures(this.regionalData.cases, this.regionalData.recovered, this.regionalData.deaths);      
     },
     addBaseMap() {
       var CartoDB_DarkMatter = L.tileLayer(
@@ -64,26 +65,6 @@ export default {
         return this._div;
       };
       this.infoControl.addTo(this.map);
-    },
-    addLegend() {
-      var legend = L.control({ position: "bottomright" });
-
-      legend.onAdd = function() {
-        var div = L.DomUtil.create("div", "info legend"),
-          grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
-
-        div.innerHTML = "<h5 class='legend-title'>% Casos (24h)</h5>";
-        for (var i = 0; i < grades.length; i++) {
-          div.innerHTML +=
-            '<i style="background:' +
-            getColor(grades[i] + 1) +
-            '"></i> ' +
-            grades[i] +
-            (grades[i + 1] ? " &ndash; " + grades[i + 1] + "<br>" : "+");
-        }
-        return div;
-      };
-      legend.addTo(this.map);
     },    
     addFeatures(casesData, recoveredData, deathsData) {
       let self = this;

@@ -43,6 +43,7 @@ export default {
   },
   computed: {
     ...mapState({
+      activeLayer: state => state.activeLayer,
       nationalTodayData: state => state.nationalData.today,
       nationalYesterdayData: state => state.nationalData.yesterday
     }),
