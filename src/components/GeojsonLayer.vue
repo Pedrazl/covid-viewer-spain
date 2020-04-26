@@ -9,25 +9,30 @@ export default {
     geojson: {
       type: Object,
       required: true
+    },
+    layerName: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       geojsonLayer: {},
       mapObj: this.$parent.map,
-      layerInfoControl: this.$parent.infoControl
+      layerInfoControl: this.$parent.infoControl,
+      legend: {}
     };
   },
   beforeMount() {
     this.setupInfoWindow();
   },
   mounted() {
-    this.init();
+    this.init();    
   },
-  updated() {},
   methods: {
     init() {
       this.loadGeojsonLayer();
+      this.addLegend();
       this.layerInfoControl.update();
     },
 
@@ -72,8 +77,8 @@ export default {
     },
     style(feature) {
       let trend = calculateTrend(
-        feature.properties.cases.today,
-        feature.properties.cases.yesterday
+        feature.properties[this.layerName].today,
+        feature.properties[this.layerName].yesterday
       );
       return {
         fillColor: getColor(trend),
@@ -127,7 +132,31 @@ export default {
           }</i></div></div></div>`;
         }
       };
+    },
+    addLegend() {
+      this.legend = L.control({ position: "bottomright" });
+      var title = this.layerName;
+
+      this.legend.onAdd = function() {
+        var div = L.DomUtil.create("div", "info legend"),
+          grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
+
+        div.innerHTML = `<h5 class='legend-title'>% ${title} (24h)</h5>`;
+        for (var i = 0; i < grades.length; i++) {
+          div.innerHTML +=
+            '<i style="background:' +
+            getColor(grades[i] + 1) +
+            '"></i> ' +
+            grades[i] +
+            (grades[i + 1] ? " &ndash; " + grades[i + 1] + "<br>" : "+");
+        }
+        return div;
+      };
+      this.legend.addTo(this.mapObj);
     }
+  },
+  beforeDestroy() {
+    this.mapObj.removeControl(this.legend);
   }
 };
 </script>
