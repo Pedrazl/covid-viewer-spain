@@ -22,6 +22,7 @@
       </section>
     </div>
     <stats-dashboard
+    v-if="dataLoaded"
       :todayData="nationalTodayData"
       :yesterdayData="nationalYesterdayData"
     >
@@ -47,6 +48,9 @@ export default {
       nationalTodayData: state => state.nationalData.today,
       nationalYesterdayData: state => state.nationalData.yesterday
     }),
+    dataLoaded() {
+      return Object.keys(this.nationalTodayData).length > 0 && Object.keys(this.nationalYesterdayData).length > 0;
+    },
     formattedDate() {
       return this.nationalTodayData.fecha && this.nationalTodayData.fecha !== ""
         ? new Date(this.nationalTodayData.fecha)

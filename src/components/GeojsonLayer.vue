@@ -3,7 +3,8 @@
 </template>
 <script>
 import L from "leaflet";
-import { calculateTrend, getColor } from "@/util.js";
+import { calculateTrend } from "@/util.js";
+import { palettesMixin } from "@/mixins/palettes.js";
 export default {
   props: {
     geojson: {
@@ -15,6 +16,7 @@ export default {
       required: true
     }
   },
+  mixins: [palettesMixin],
   data() {
     return {
       geojsonLayer: {},
@@ -22,6 +24,22 @@ export default {
       layerInfoControl: this.$parent.infoControl,
       legend: {}
     };
+  },
+  computed: {
+    activePalette() {
+      return this.layerName === "recovered"
+        ? "green"
+        : this.layerName === "deaths"
+        ? "red"
+        : "purple";
+    },    
+    activeLegendTitle() {
+      return this.layerName === "recovered"
+        ? "altas"
+        : this.layerName === "deaths"
+        ? "muertes"
+        : "casos";
+    }
   },
   beforeMount() {
     this.setupInfoWindow();
@@ -81,7 +99,7 @@ export default {
         feature.properties[this.layerName].yesterday
       );
       return {
-        fillColor: getColor(trend),
+        fillColor: this.getColorFromPalette(this.activePalette, trend),
         weight: 1,
         opacity: 1,
         color: "white",
@@ -135,17 +153,17 @@ export default {
     },
     addLegend() {
       this.legend = L.control({ position: "bottomright" });
-      var title = this.layerName;
+      let self = this;
 
       this.legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend"),
           grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
 
-        div.innerHTML = `<h5 class='legend-title'>% ${title} (24h)</h5>`;
+        div.innerHTML = `<h5 class='legend-title'>% ${self.activeLegendTitle} (24h)</h5>`;
         for (var i = 0; i < grades.length; i++) {
           div.innerHTML +=
             '<i style="background:' +
-            getColor(grades[i] + 1) +
+            self.getColorFromPalette(self.activePalette, grades[i] + 1) +
             '"></i> ' +
             grades[i] +
             (grades[i + 1] ? " &ndash; " + grades[i + 1] + "<br>" : "+");
@@ -160,4 +178,34 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style lang="scss">
+.legend {
+  // line-height: 18px;
+  color: #555;
+  &__label {
+    font-size: 1rem;
+  }
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.legend-title {
+  font-size: 1.2rem;
+  padding-bottom: 0.5rem;
+}
+.red {
+  color: #cb181d;
+}
+.green {
+  color: #41ab5d;
+}
+
+.blue {
+  color:#518bc3;
+}
+</style>

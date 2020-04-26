@@ -166,15 +166,19 @@ export default {
 .layer-switcher:hover {
   cursor: pointer;
 }
+
 .selected {
   &__cases {
-    color: #f4a21d;
+    color: #518bc3;
+    border-bottom: 2px solid #518bc3;
   }
   &__recovered {
-    color: #22c65b;
+    color: #41ab5d;
+    border-bottom: 2px solid #41ab5d;
   }
   &__deaths {
-    color: #f64165;
+    color: #cb181d;
+    border-bottom: 2px solid #cb181d;
   }
 }
 
@@ -254,28 +258,39 @@ export default {
       font-size: 1rem;
     }
   }
-}
-
-@media only screen and (min-width: $breakpoint-desktopToHighResolution) {
-  .container-primary {
-    &__label {
-      font-size: 2.5rem;
-      margin: 0.9rem;
+  .selected {
+    &__cases {
+      border-top: 2px solid #518bc3;
+    }
+    &__recovered {
+      border-top: 2px solid #41ab5d;
+    }
+    &__deaths {
+      border-top: 2px solid #cb181d;
     }
   }
 
-  .container-secondary {
-    &__icon {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      margin-right: 0.8rem;
+  @media only screen and (min-width: $breakpoint-desktopToHighResolution) {
+    .container-primary {
+      &__label {
+        font-size: 2.5rem;
+        margin: 0.9rem;
+      }
     }
-    &__label {
-      font-size: 2rem;
-    }
-    &__small-label {
-      margin-left: 0.5rem;
-      font-size: 1.5rem;
+
+    .container-secondary {
+      &__icon {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        margin-right: 0.8rem;
+      }
+      &__label {
+        font-size: 2rem;
+      }
+      &__small-label {
+        margin-left: 0.5rem;
+        font-size: 1.5rem;
+      }
     }
   }
 }
