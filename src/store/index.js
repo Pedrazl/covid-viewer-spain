@@ -14,7 +14,8 @@ export default new Vuex.Store({
     nationalData: {
       today: {},
       yesterday: {}
-    }
+    },
+    activeLayer: "cases"
   },
   mutations: {
     [types.SET_NATIONAL_DATA](state, data) {
@@ -25,6 +26,9 @@ export default new Vuex.Store({
       state.regionalData.cases = data.cases;
       state.regionalData.recovered = data.recovered;
       state.regionalData.deaths = data.deaths;
+    },
+    [types.SET_ACTIVE_LAYER](state, layerName) {
+      state.activeLayer = layerName;
     }
   },
   actions: {
@@ -33,6 +37,9 @@ export default new Vuex.Store({
     },
     setRegionalData(context, data) {
       context.commit(types.SET_REGIONAL_DATA, data);
+    },
+    setActiveLayer(context, layerName) {
+      context.commit(types.SET_ACTIVE_LAYER, layerName);
     }
   },
   modules: {}
