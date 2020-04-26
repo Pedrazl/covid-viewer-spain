@@ -6,11 +6,11 @@
     <main>
       <the-map v-if="dataReady" />
       <app-data-loader
-      @statusLoading="setLoading"
-      @data-load-ready="onDataLoad"
-      @data-load-error="onDataLoadError"
-    />
-    </main>        
+        @statusLoading="setLoading"
+        @data-load-ready="onDataLoad"
+        @data-load-error="onDataLoadError"
+      />
+    </main>
     <b-loading
       :is-full-page="isFullPage"
       :active.sync="isLoading"
@@ -23,7 +23,7 @@
 import TheHeader from "./components/TheHeader.vue";
 import TheMap from "./components/TheMap.vue";
 import { loadingSpinnerMixin } from "@/mixins/loadingSpinner.js";
-import AppDataLoader from "@/components/renderless/AppDataLoader"
+import AppDataLoader from "@/components/renderless/AppDataLoader";
 
 export default {
   name: "App",

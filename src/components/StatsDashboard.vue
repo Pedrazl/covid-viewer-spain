@@ -63,36 +63,35 @@
       </div>
     </b-tooltip>
     <b-tooltip
-          label="Click para ver nº de Personas Fallecidas"
-          type="is-dark"
-          position="is-bottom"
-          size="is-small"
-          multilined
-        >
-    <div
-      class="layer-switcher"
-      :class="activeLayer === 'deaths' ? 'selected__deaths' : ''"
-      @click="setActiveLayer('deaths')"
+      label="Click para ver nº de Personas Fallecidas"
+      type="is-dark"
+      position="is-bottom"
+      size="is-small"
+      multilined
     >
-      <div class="container-primary">
-        <span class="mdi mdi-grave-stone container-primary__ico"></span>
-        
+      <div
+        class="layer-switcher"
+        :class="activeLayer === 'deaths' ? 'selected__deaths' : ''"
+        @click="setActiveLayer('deaths')"
+      >
+        <div class="container-primary">
+          <span class="mdi mdi-grave-stone container-primary__ico"></span>
+
           <label class="container-primary__label">
             {{ formatNumbers(todayData.fallecimientos) }}</label
           >
+        </div>
+        <div class="container-secondary">
+          <i class="material-icons container-secondary__icon">{{
+            deathsTrend > 0 ? "trending_up" : "trending_down"
+          }}</i>
+          <label class="container-secondary__label">{{ deathsTrend }}%</label>
+          <label class="container-secondary__small-label"
+            >(+{{ deathsDifference }})</label
+          >
+        </div>
       </div>
-      <div class="container-secondary">
-        <i class="material-icons container-secondary__icon">{{
-          deathsTrend > 0 ? "trending_up" : "trending_down"
-        }}</i>
-        <label class="container-secondary__label">{{ deathsTrend }}%</label>
-        <label class="container-secondary__small-label"
-          >(+{{ deathsDifference }})</label
-        >
-      </div>
-    </div>
-    </b-tooltip
-        >
+    </b-tooltip>
   </div>
 </template>
 <script>

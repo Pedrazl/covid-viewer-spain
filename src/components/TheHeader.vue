@@ -21,7 +21,7 @@
         </div>
       </section>
     </div>
-    <stats-dashboard      
+    <stats-dashboard
       :todayData="nationalTodayData"
       :yesterdayData="nationalYesterdayData"
     >
@@ -47,15 +47,13 @@ export default {
       nationalTodayData: state => state.nationalData.today,
       nationalYesterdayData: state => state.nationalData.yesterday
     }),
-    formattedDate() {      
-        return this.nationalTodayData.fecha && this.nationalTodayData.fecha !== ""
-          ? new Date(this.nationalTodayData.fecha)
-              .toLocaleString("es-ES", {})
-              .slice(0, 10)
-          : "";
-      }
-      
-    
+    formattedDate() {
+      return this.nationalTodayData.fecha && this.nationalTodayData.fecha !== ""
+        ? new Date(this.nationalTodayData.fecha)
+            .toLocaleString("es-ES", {})
+            .slice(0, 10)
+        : "";
+    }
   }
 };
 </script>

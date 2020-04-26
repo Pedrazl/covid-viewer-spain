@@ -27,7 +27,7 @@ export default {
     this.setupInfoWindow();
   },
   mounted() {
-    this.init();    
+    this.init();
   },
   methods: {
     init() {

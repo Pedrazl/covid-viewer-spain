@@ -2,7 +2,7 @@ export const calculateTrend = (present, past) => {
   return (((present - past) * 100) / present).toFixed(1);
 };
 
-export const getColor = (d) => {
+export const getColor = d => {
   return d > 10
     ? "#990000"
     : d > 5.5
