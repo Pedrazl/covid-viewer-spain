@@ -3,7 +3,10 @@ COVID-19 Viewer is a Progressive Web App with updated data about the progression
 
 You can watch it live at  <b> https://pedrazl.github.io/covid-viewer-spain/ </b>
 
-![alt text](https://github.com/Pedrazl/covid-viewer-spain/blob/master/public/img/Covid_Viewer_Screenshot.PNG?raw=true "Covid Viewer for Spain")
+![alt text](https://github.com/Pedrazl/covid-viewer-spain/blob/master/public/img/Demo1.gif?raw=true "Covid Viewer for Spain")
+
+
+<!-- ![alt text](https://github.com/Pedrazl/covid-viewer-spain/blob/master/public/img/Covid_Viewer_Screenshot_28_04_2020.PNG?raw=true "Covid Viewer for Spain") -->
 
 ## Project setup
 ```
