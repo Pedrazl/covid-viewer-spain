@@ -170,7 +170,7 @@ export default {
 .selected {
   &__cases {
     color: #518bc3;
-    border-top: 2px solid #518bc3;
+    border-bottom: 2px solid #518bc3;
   }
   &__recovered {
     color: #41ab5d;
