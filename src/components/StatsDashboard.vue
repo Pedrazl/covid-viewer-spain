@@ -16,7 +16,7 @@
           <span class="mdi mdi-account-group container-primary__ico"></span>
 
           <label class="container-primary__label">
-            {{ formatNumbers(todayData.casos) }}
+            {{ formatNumbers(todayData.casos_total) }}
           </label>
         </div>
         <div class="container-secondary">
@@ -114,10 +114,10 @@ export default {
       activeLayer: state => state.activeLayer
     }),
     casesDifference() {
-      return this.todayData.casos - this.yesterdayData.casos;
+      return this.todayData.casos_total - this.yesterdayData.casos_total;
     },
     casesTrend() {
-      return calculateTrend(this.todayData.casos, this.yesterdayData.casos);
+      return calculateTrend(this.todayData.casos_total, this.yesterdayData.casos_total);
     },
     recoveredDifference() {
       return this.todayData.altas - this.yesterdayData.altas;
