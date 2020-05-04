@@ -3,7 +3,7 @@
 </template>
 <script>
 import L from "leaflet";
-import { calculateTrend } from "@/util.js";
+import { calculateTrend, getDailyStats } from "@/util.js";
 import { palettesMixin } from "@/mixins/palettes.js";
 export default {
   props: {
@@ -39,7 +39,7 @@ export default {
         : this.layerName === "deaths"
         ? "muertes"
         : "casos";
-    }
+    }    
   },
   beforeMount() {
     this.setupInfoWindow();
@@ -112,41 +112,33 @@ export default {
         if (!props) {
           this._div.innerHTML = `<h4>COVID-19 en España</h4>Pase el ratón sobre una región`;
         } else {
-          var trendCases = calculateTrend(
-            props.cases.today,
-            props.cases.yesterday
-          );
-          var trendRecovered = calculateTrend(
-            props.recovered.today,
-            props.recovered.yesterday
-          );
-          var trendDeaths = calculateTrend(
-            props.deaths.today,
-            props.deaths.yesterday
-          );
+          var casesDailyStats = getDailyStats(props.cases.today, props.cases.yesterday);
+          var revocoveredDailyStats = getDailyStats(props.recovered.today, props.recovered.yesterday);
+          var deathsDailyStats = getDailyStats(props.deaths.today, props.deaths.yesterday);          
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
-            props.comunidade_autonoma
+            props.
+            comunidade_autonoma
           }</b> (ult.24h)<div class="info__label blue"><label>${
             props.cases.today
-          } total casos</label></div><div class="info__label green"><label>${
+          } total casos (+${casesDailyStats.diff})</label></div><div class="info__label green"><label>${
             props.recovered.today
-          } total altas </label></div><div class="info__label red"><label>${
+          } total altas (+${revocoveredDailyStats.diff}) </label></div><div class="info__label red"><label>${
             props.deaths.today
-          } total fallecidos </label></div>
+          } total fallecidos (+${deathsDailyStats.diff})</label></div>
           <div style="display:flex">
-          <div class="info__sum blue"><label>${trendCases}%</label>
+          <div class="info__sum blue"><label>${casesDailyStats.trend}%</label>
 
           <div> <i class="material-icons" style="font-size:28px">${
-            trendCases > 0 ? "trending_up" : "trending_down"
+            casesDailyStats.trend > 0 ? "trending_up" : "trending_down"
           }</i></div></div>
 
-          <div class="info__sum green"><label>${trendRecovered}%</label><div> <i class="material-icons" style="font-size:28px">${
-            trendRecovered > 0 ? "trending_up" : "trending_down"
+          <div class="info__sum green"><label>${revocoveredDailyStats.trend}%</label><div> <i class="material-icons" style="font-size:28px">${
+            revocoveredDailyStats.trend > 0 ? "trending_up" : "trending_down"
           }</i></div></div>
 
-          <div class="info__sum red"><label>${trendDeaths}%</label><div><i class="material-icons" style="font-size:28px">${
-            trendDeaths > 0 ? "trending_up" : "trending_down"
+          <div class="info__sum red"><label>${deathsDailyStats.trend}%</label><div><i class="material-icons" style="font-size:28px">${
+            deathsDailyStats.trend > 0 ? "trending_up" : "trending_down"
           }</i></div></div></div>`;
         }
       };
