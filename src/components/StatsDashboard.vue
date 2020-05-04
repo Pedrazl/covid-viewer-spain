@@ -117,7 +117,10 @@ export default {
       return this.todayData.casos_total - this.yesterdayData.casos_total;
     },
     casesTrend() {
-      return calculateTrend(this.todayData.casos_total, this.yesterdayData.casos_total);
+      return calculateTrend(
+        this.todayData.casos_total,
+        this.yesterdayData.casos_total
+      );
     },
     recoveredDifference() {
       return this.todayData.altas - this.yesterdayData.altas;
