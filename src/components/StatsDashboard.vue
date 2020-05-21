@@ -43,7 +43,7 @@
         @click="setActiveLayer('hospitalized')"
       >
         <div class="container-primary">
-          <span class="mdi mdi-heart container-primary__ico"></span>
+          <span class="mdi mdi-hospital-box-outline container-primary__ico"></span>
 
           <label class="container-primary__label">
             {{ formatNumbers(todayData.hospitalizados) }}
