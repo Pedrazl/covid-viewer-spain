@@ -116,7 +116,7 @@ export default {
             props.cases.today,
             props.cases.yesterday
           );
-          var revocoveredDailyStats = getDailyStats(
+          var hospitalizedDailyStats = getDailyStats(
             props.hospitalized.today,
             props.hospitalized.yesterday
           );
@@ -134,7 +134,7 @@ export default {
           })</label></div><div class="info__label green"><label>${
             props.hospitalized.today
           } total hospitalizados (+${
-            revocoveredDailyStats.diff
+            hospitalizedDailyStats.diff
           }) </label></div><div class="info__label red"><label>${
             props.deaths.today
           } total fallecidos (+${deathsDailyStats.diff})</label></div>
@@ -146,9 +146,9 @@ export default {
           }</i></div></div>
 
           <div class="info__sum green"><label>${
-            revocoveredDailyStats.trend
+            hospitalizedDailyStats.trend
           }%</label><div> <i class="material-icons" style="font-size:28px">${
-            revocoveredDailyStats.trend > 0 ? "trending_up" : "trending_down"
+            hospitalizedDailyStats.trend > 0 ? "trending_up" : "trending_down"
           }</i></div></div>
 
           <div class="info__sum red"><label>${

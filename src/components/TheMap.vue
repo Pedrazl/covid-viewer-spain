@@ -99,7 +99,7 @@ export default {
               ]
             ]
         };
-        region.properties.Hospitalized = {
+        region.properties.hospitalized = {
           today:
             regionHospitalizedRow[
               Object.keys(regionHospitalizedRow)[
