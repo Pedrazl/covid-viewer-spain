@@ -1,7 +1,7 @@
 <template>
   <div class="header__summary">
     <b-tooltip
-      label="Nº de Casos Confirmados"
+      label="Nº de Casos Confirmados (PCR)"
       type="is-dark"
       position="is-bottom"
       size="is-small"
@@ -16,7 +16,7 @@
           <span class="mdi mdi-account-group container-primary__ico"></span>
 
           <label class="container-primary__label">
-            {{ formatNumbers(todayData.casos_total) }}
+            {{ formatNumbers(todayData.casos_pcr) }}
           </label>
         </div>
         <div class="container-secondary">
@@ -31,7 +31,7 @@
       </div>
     </b-tooltip>
     <b-tooltip
-      label="Nº de Personas Curadas"
+      label="Nº de Personas Hospitalizadas"
       type="is-dark"
       position="is-bottom"
       size="is-small"
@@ -39,25 +39,25 @@
     >
       <div
         class="layer-switcher"
-        :class="activeLayer === 'recovered' ? 'selected__recovered' : ''"
-        @click="setActiveLayer('recovered')"
+        :class="activeLayer === 'hospitalized' ? 'selected__hospitalized' : ''"
+        @click="setActiveLayer('hospitalized')"
       >
         <div class="container-primary">
           <span class="mdi mdi-heart container-primary__ico"></span>
 
           <label class="container-primary__label">
-            {{ formatNumbers(todayData.altas) }}
+            {{ formatNumbers(todayData.hospitalizados) }}
           </label>
         </div>
         <div class="container-secondary">
           <i class="material-icons container-secondary__icon">{{
-            recoveredTrend > 0 ? "trending_up" : "trending_down"
+            hospitalizedTrend > 0 ? "trending_up" : "trending_down"
           }}</i>
           <label class="container-secondary__label"
-            >{{ recoveredTrend }}%</label
+            >{{ hospitalizedTrend }}%</label
           >
           <label class="container-secondary__small-label">
-            (+{{ recoveredDifference }})</label
+            (+{{ hospitalizedDifference }})</label
           >
         </div>
       </div>
@@ -114,19 +114,19 @@ export default {
       activeLayer: state => state.activeLayer
     }),
     casesDifference() {
-      return this.todayData.casos_total - this.yesterdayData.casos_total;
+      return this.todayData.casos_pcr - this.yesterdayData.casos_pcr;
     },
     casesTrend() {
       return calculateTrend(
-        this.todayData.casos_total,
-        this.yesterdayData.casos_total
+        this.todayData.casos_pcr,
+        this.yesterdayData.casos_pcr
       );
     },
-    recoveredDifference() {
-      return this.todayData.altas - this.yesterdayData.altas;
+    hospitalizedDifference() {
+      return this.todayData.hospitalizados - this.yesterdayData.hospitalizados;
     },
-    recoveredTrend() {
-      return calculateTrend(this.todayData.altas, this.yesterdayData.altas);
+    hospitalizedTrend() {
+      return calculateTrend(this.todayData.hospitalizados, this.yesterdayData.hospitalizados);
     },
     deathsDifference() {
       return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
@@ -175,7 +175,7 @@ export default {
     color: #518bc3;
     border-bottom: 2px solid #518bc3;
   }
-  &__recovered {
+  &__hospitalized {
     color: #41ab5d;
     border-bottom: 2px solid #41ab5d;
   }
@@ -266,7 +266,7 @@ export default {
       border-bottom: none;
       border-top: 2px solid #518bc3;
     }
-    &__recovered {
+    &__hospitalized {
       border-bottom: none;
       border-top: 2px solid #41ab5d;
     }

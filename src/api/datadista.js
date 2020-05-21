@@ -17,7 +17,7 @@ const getNationalData = async () => {
 };
 
 const getCasesByRegion = async () => {
-  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_casos.csv`;
+  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_confirmados_pcr.csv`;
   const res = await axios.get(_proxyurl + url, {
     headers: _basicHeaders
   });
@@ -34,8 +34,8 @@ const getDeathsByRegion = async () => {
   return Papa.parse(res.data, { header: true });
 };
 
-const getRecoveredByRegion = async () => {
-  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_altas.csv`;
+const getHospitalizedByRegion = async () => {
+  const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_hospitalizados.csv`;
   const res = await axios.get(_proxyurl + url, {
     headers: _basicHeaders
   });
@@ -46,6 +46,6 @@ const getRecoveredByRegion = async () => {
 export {
   getCasesByRegion,
   getDeathsByRegion,
-  getRecoveredByRegion,
+  getHospitalizedByRegion,
   getNationalData
 };
