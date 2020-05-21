@@ -9,7 +9,7 @@ export default new Vuex.Store({
     regionalData: {
       cases: [],
       deaths: [],
-      recovered: []
+      hospitalized: []
     },
     nationalData: {
       today: {},
@@ -24,7 +24,7 @@ export default new Vuex.Store({
     },
     [types.SET_REGIONAL_DATA](state, data) {
       state.regionalData.cases = data.cases;
-      state.regionalData.recovered = data.recovered;
+      state.regionalData.hospitalized = data.hospitalized;
       state.regionalData.deaths = data.deaths;
     },
     [types.SET_ACTIVE_LAYER](state, layerName) {

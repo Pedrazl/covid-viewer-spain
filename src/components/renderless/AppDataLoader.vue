@@ -3,7 +3,7 @@ import {
   getNationalData,
   getCasesByRegion,
   getDeathsByRegion,
-  getRecoveredByRegion
+  getHospitalizedByRegion
 } from "@/api/datadista.js";
 import { mapActions } from "vuex";
 
@@ -40,12 +40,12 @@ export default {
         /* Regional Data */
         var casesData = await getCasesByRegion();
         var deathsData = await getDeathsByRegion();
-        var recoveredData = await getRecoveredByRegion();
+        var hospitalizedData = await getHospitalizedByRegion();
 
         this.setRegionalData({
           cases: casesData,
           deaths: deathsData,
-          recovered: recoveredData
+          hospitalized: hospitalizedData
         });
         /* */
         this.$emit("statusLoading", false);
