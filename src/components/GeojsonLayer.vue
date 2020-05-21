@@ -129,15 +129,15 @@ export default {
             props.comunidade_autonoma
           }</b> (ult.24h)<div class="info__label blue"><label>${
             props.cases.today
-          } total casos (+${
+          } casos (pcr) (+${
             casesDailyStats.diff
           })</label></div><div class="info__label green"><label>${
             props.hospitalized.today
-          } total hospitalizados (+${
+          } hospitalizados (+${
             hospitalizedDailyStats.diff
           }) </label></div><div class="info__label red"><label>${
             props.deaths.today
-          } total fallecidos (+${deathsDailyStats.diff})</label></div>
+          } fallecidos (+${deathsDailyStats.diff})</label></div>
           <div style="display:flex">
           <div class="info__sum blue"><label>${casesDailyStats.trend}%</label>
 
@@ -165,7 +165,7 @@ export default {
 
       this.legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend"),
-          grades = [0, 1, 1.5, 2.5, 3.5, 4.5, 5.5, 10];
+          grades = [0, 0.2, 0.4, 0.8, 1, 2, 4, 8];
 
         div.innerHTML = `<h5 class='legend-title'>% ${self.activeLegendTitle} (24h)</h5>`;
         for (var i = 0; i < grades.length; i++) {
