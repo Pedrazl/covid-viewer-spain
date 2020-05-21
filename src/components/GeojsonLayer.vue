@@ -27,18 +27,18 @@ export default {
   },
   computed: {
     activePalette() {
-      return this.layerName === "recovered"
+      return this.layerName === "hospitalized"
         ? "green"
         : this.layerName === "deaths"
         ? "red"
         : "purple";
     },
     activeLegendTitle() {
-      return this.layerName === "recovered"
-        ? "altas"
+      return this.layerName === "hospitalized"
+        ? "hospitalizados"
         : this.layerName === "deaths"
         ? "muertes"
-        : "casos";
+        : "casos (pcr)";
     }
   },
   beforeMount() {
@@ -117,8 +117,8 @@ export default {
             props.cases.yesterday
           );
           var revocoveredDailyStats = getDailyStats(
-            props.recovered.today,
-            props.recovered.yesterday
+            props.hospitalized.today,
+            props.hospitalized.yesterday
           );
           var deathsDailyStats = getDailyStats(
             props.deaths.today,
@@ -132,8 +132,8 @@ export default {
           } total casos (+${
             casesDailyStats.diff
           })</label></div><div class="info__label green"><label>${
-            props.recovered.today
-          } total altas (+${
+            props.hospitalized.today
+          } total hospitalizados (+${
             revocoveredDailyStats.diff
           }) </label></div><div class="info__label red"><label>${
             props.deaths.today

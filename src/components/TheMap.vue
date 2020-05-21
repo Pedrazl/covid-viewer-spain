@@ -47,7 +47,7 @@ export default {
       this.addInfoControl();
       this.addFeatures(
         this.regionalData.cases,
-        this.regionalData.recovered,
+        this.regionalData.hospitalized,
         this.regionalData.deaths
       );
     },
@@ -72,7 +72,7 @@ export default {
       };
       this.infoControl.addTo(this.map);
     },
-    addFeatures(casesData, recoveredData, deathsData) {
+    addFeatures(casesData, hospitalizedData, deathsData) {
       let self = this;
       for (let region of SPANISH_REGIONS_GEOJSON.features) {
         var regionCasesRow = casesData.data.find(
@@ -81,7 +81,7 @@ export default {
         var regionDeathsRow = deathsData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
-        var regionRecoveredRow = recoveredData.data.find(
+        var regionHospitalizedRow = hospitalizedData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
 
@@ -99,17 +99,17 @@ export default {
               ]
             ]
         };
-        region.properties.recovered = {
+        region.properties.Hospitalized = {
           today:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 1
+            regionHospitalizedRow[
+              Object.keys(regionHospitalizedRow)[
+                Object.keys(regionHospitalizedRow).length - 1
               ]
             ],
           yesterday:
-            regionRecoveredRow[
-              Object.keys(regionRecoveredRow)[
-                Object.keys(regionRecoveredRow).length - 2
+            regionHospitalizedRow[
+              Object.keys(regionHospitalizedRow)[
+                Object.keys(regionHospitalizedRow).length - 2
               ]
             ]
         };
