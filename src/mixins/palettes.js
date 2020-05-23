@@ -60,8 +60,8 @@ export const palettesMixin = {
         : d > 0.4
         ? "#c7e9c0"
         : d > 0.2
-        ? "#e5f5e0"
-        : "#f7fcf5";
+        ? "#c8e8be"
+        : "#e5f5e0";
     }
   }
 };

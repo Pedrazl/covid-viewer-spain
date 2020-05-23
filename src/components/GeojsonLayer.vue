@@ -102,9 +102,9 @@ export default {
         fillColor: this.getColorFromPalette(this.activePalette, trend),
         weight: 1,
         opacity: 1,
-        color: "white",
+        color: "grey",
         dashArray: "1",
-        fillOpacity: 0.7
+        fillOpacity: 1
       };
     },
     setupInfoWindow() {
