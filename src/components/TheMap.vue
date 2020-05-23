@@ -12,6 +12,7 @@
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import GeojsonLayer from "@/components/GeojsonLayer";
+import {format} from "date-fns";
 import { mapState } from "vuex";
 
 export default {
@@ -85,7 +86,9 @@ export default {
           row => row.cod_ine === region.properties.codigo
         );
 
+        var dates = Object.keys(regionCasesRow);
         region.properties.cases = {
+          date: format(new Date(dates[Object.keys(regionCasesRow).length-1]),"d/M/Y"),
           today:
             regionCasesRow[
               Object.keys(regionCasesRow)[

@@ -127,7 +127,7 @@ export default {
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
-          }</b> (ult.24h)<div class="info__label blue"><label>${
+          }</b> (<label class="label-small">${props.cases.date}</label>)<div class="info__label blue"><label>${
             props.cases.today
           } casos (pcr) (+${
             casesDailyStats.diff
@@ -215,5 +215,8 @@ export default {
 
 .blue {
   color: #518bc3;
+}
+.label-small{
+  font-size: 0.8rem;
 }
 </style>
