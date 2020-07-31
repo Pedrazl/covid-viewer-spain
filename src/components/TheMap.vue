@@ -12,7 +12,7 @@
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import GeojsonLayer from "@/components/GeojsonLayer";
-import {format} from "date-fns";
+import {format, isThisWeek} from "date-fns";
 import { mapState } from "vuex";
 
 export default {
@@ -79,6 +79,14 @@ export default {
         var regionCasesRow = casesData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
+        
+        //todo: acabar esto
+        var regionCasesLastWeek = casesData.data.filter(
+          row => row.cod_ine === region.properties.codigo 
+        );
+        var filterRows = regionCasesLastWeek.filter(row=> isThisWeek(new Date(row.fecha)) === true)
+        console.log(filterRows);
+
         var regionDeathsRow = deathsData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
