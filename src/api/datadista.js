@@ -30,6 +30,7 @@ const getCasesByRegion = async () => {
 };
 
 const getDeathsByRegion = async () => {
+  //https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/documentos/Fallecidos_COVID19.xlsx
   const url = `https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/ccaa_covid19_fallecidos.csv`;
   const res = await axios.get(_proxyurl + url, {
     headers: _basicHeaders

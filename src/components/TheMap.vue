@@ -12,7 +12,7 @@
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import GeojsonLayer from "@/components/GeojsonLayer";
-import {format, isThisWeek} from "date-fns";
+import { format, subDays, isAfter, isBefore, addDays } from "date-fns";
 import { mapState } from "vuex";
 
 export default {
@@ -79,14 +79,28 @@ export default {
         var regionCasesRow = casesData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
-        
-        //todo: acabar esto
-        var regionCasesLastWeek = casesData.data.filter(
-          row => row.cod_ine === region.properties.codigo 
-        );
-        var filterRows = regionCasesLastWeek.filter(row=> isThisWeek(new Date(row.fecha)) === true)
-        console.log(filterRows);
 
+        //Filter last week cases for specific region
+        var lastWeekEnd = addDays(
+          new Date(casesData.data[casesData.data.length - 2].fecha),
+          1
+        );
+        var lastWeekIni = subDays(lastWeekEnd, 8);
+        var regionCases = casesData.data.filter(
+          row => row.cod_ine === region.properties.codigo
+        );
+        var regionCasesLastWeek = regionCases.filter(
+          row =>
+            isAfter(new Date(row.fecha), lastWeekIni) &&
+            isBefore(new Date(row.fecha), lastWeekEnd)
+        );
+        console.log(regionCasesLastWeek);
+        var casesSum = 0;
+        for (let day of regionCasesLastWeek) {
+          casesSum += parseInt(day.num_casos);
+        }
+        console.log(`Casos ultima semana en region: ${casesSum}`);
+        
         var regionDeathsRow = deathsData.data.find(
           row => row.cod_ine === region.properties.codigo
         );
@@ -96,7 +110,10 @@ export default {
 
         var dates = Object.keys(regionCasesRow);
         region.properties.cases = {
-          date: format(new Date(dates[Object.keys(regionCasesRow).length-1]),"d/M/Y"),
+          date: format(
+            new Date(dates[Object.keys(regionCasesRow).length - 1]),
+            "d/M/Y"
+          ),
           today:
             regionCasesRow[
               Object.keys(regionCasesRow)[

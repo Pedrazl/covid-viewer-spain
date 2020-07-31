@@ -43,7 +43,9 @@
         @click="setActiveLayer('hospitalized')"
       >
         <div class="container-primary">
-          <span class="mdi mdi-hospital-box-outline container-primary__ico"></span>
+          <span
+            class="mdi mdi-hospital-box-outline container-primary__ico"
+          ></span>
 
           <label class="container-primary__label">
             {{ formatNumbers(todayData.hospitalizados) }}
@@ -126,7 +128,10 @@ export default {
       return this.todayData.hospitalizados - this.yesterdayData.hospitalizados;
     },
     hospitalizedTrend() {
-      return calculateTrend(this.todayData.hospitalizados, this.yesterdayData.hospitalizados);
+      return calculateTrend(
+        this.todayData.hospitalizados,
+        this.yesterdayData.hospitalizados
+      );
     },
     deathsDifference() {
       return this.todayData.fallecimientos - this.yesterdayData.fallecimientos;
