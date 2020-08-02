@@ -3,7 +3,7 @@
 </template>
 <script>
 import L from "leaflet";
-import { calculateTrend, getDailyStats } from "@/util.js";
+import { getDailyStats } from "@/util.js";
 import { palettesMixin } from "@/mixins/palettes.js";
 export default {
   props: {
@@ -38,7 +38,7 @@ export default {
         ? "hospitalizados"
         : this.layerName === "deaths"
         ? "muertes"
-        : "casos (pcr)";
+        : "casos";
     }
   },
   beforeMount() {
@@ -93,13 +93,9 @@ export default {
       this.geojsonLayer.resetStyle(e.target);
       this.layerInfoControl.update();
     },
-    style(feature) {
-      let trend = calculateTrend(
-        feature.properties[this.layerName].today,
-        feature.properties[this.layerName].yesterday
-      );
+    style(feature) {     
       return {
-        fillColor: this.getColorFromPalette(this.activePalette, trend),
+        fillColor: this.getColorFromPalette(this.activePalette, feature.properties[this.layerName].today),
         weight: 1,
         opacity: 1,
         color: "grey",
@@ -115,15 +111,7 @@ export default {
           var casesDailyStats = getDailyStats(
             props.cases.today,
             props.cases.yesterday
-          );
-          var hospitalizedDailyStats = getDailyStats(
-            props.hospitalized.today,
-            props.hospitalized.yesterday
-          );
-          var deathsDailyStats = getDailyStats(
-            props.deaths.today,
-            props.deaths.yesterday
-          );
+          );         
 
           this._div.innerHTML = `<h4>COVID-19 en España</h4><b>${
             props.comunidade_autonoma
@@ -133,30 +121,12 @@ export default {
             props.cases.today
           } casos (pcr) (+${
             casesDailyStats.diff
-          })</label></div><div class="info__label green"><label>${
-            props.hospitalized.today
-          } hospitalizados (+${
-            hospitalizedDailyStats.diff
-          }) </label></div><div class="info__label red"><label>${
-            props.deaths.today
-          } fallecidos (+${deathsDailyStats.diff})</label></div>
+          })</label></div>
           <div style="display:flex">
           <div class="info__sum blue"><label>${casesDailyStats.trend}%</label>
 
           <div> <i class="material-icons" style="font-size:28px">${
             casesDailyStats.trend > 0 ? "trending_up" : "trending_down"
-          }</i></div></div>
-
-          <div class="info__sum green"><label>${
-            hospitalizedDailyStats.trend
-          }%</label><div> <i class="material-icons" style="font-size:28px">${
-            hospitalizedDailyStats.trend > 0 ? "trending_up" : "trending_down"
-          }</i></div></div>
-
-          <div class="info__sum red"><label>${
-            deathsDailyStats.trend
-          }%</label><div><i class="material-icons" style="font-size:28px">${
-            deathsDailyStats.trend > 0 ? "trending_up" : "trending_down"
           }</i></div></div></div>`;
         }
       };
@@ -167,9 +137,9 @@ export default {
 
       this.legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend"),
-          grades = [0, 0.2, 0.4, 0.8, 1, 2, 4, 8];
+          grades = [0, 25, 50, 100, 500, 1000, 5000, 10000];
 
-        div.innerHTML = `<h5 class='legend-title'>% ${self.activeLegendTitle} (24h)</h5>`;
+        div.innerHTML = `<h5 class='legend-title'>Δ ${self.activeLegendTitle} (ult.semana)</h5>`;
         for (var i = 0; i < grades.length; i++) {
           div.innerHTML +=
             '<i style="background:' +
