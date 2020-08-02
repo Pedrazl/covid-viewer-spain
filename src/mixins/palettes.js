@@ -11,19 +11,19 @@ export const palettesMixin = {
       }
     },
     getPurple(d) {
-      return d > 8
+      return d > 10000
         ? "#4d004b"
-        : d > 4
+        : d > 5000
         ? "#810f7c"
-        : d > 2
+        : d > 1000
         ? "#88419d"
-        : d > 1
+        : d > 500
         ? "#8c6bb1"
-        : d > 0.8
+        : d > 100
         ? "#8c96c6"
-        : d > 0.4
+        : d > 50
         ? "#9ebcda"
-        : d > 0.2
+        : d > 25
         ? "#bfd3e6"
         : "#e0ecf4";
     },

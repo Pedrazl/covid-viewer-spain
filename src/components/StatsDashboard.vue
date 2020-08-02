@@ -39,8 +39,7 @@
     >
       <div
         class="layer-switcher"
-        :class="activeLayer === 'hospitalized' ? 'selected__hospitalized' : ''"
-        @click="setActiveLayer('hospitalized')"
+        :class="activeLayer === 'hospitalized' ? 'selected__hospitalized' : ''"        
       >
         <div class="container-primary">
           <span
@@ -73,8 +72,7 @@
     >
       <div
         class="layer-switcher"
-        :class="activeLayer === 'deaths' ? 'selected__deaths' : ''"
-        @click="setActiveLayer('deaths')"
+        :class="activeLayer === 'deaths' ? 'selected__deaths' : ''"        
       >
         <div class="container-primary">
           <span class="mdi mdi-grave-stone container-primary__ico"></span>

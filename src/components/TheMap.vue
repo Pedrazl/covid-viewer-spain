@@ -12,7 +12,14 @@
 import L from "leaflet";
 import { SPANISH_REGIONS_GEOJSON } from "@/data/comunidades-autonomas-espanolas.js";
 import GeojsonLayer from "@/components/GeojsonLayer";
-import { format, subDays, isAfter, isBefore, addDays } from "date-fns";
+import {
+  subDays,
+  isAfter,
+  isBefore,
+  addDays,
+  getDate,
+  getMonth
+} from "date-fns";
 import { mapState } from "vuex";
 
 export default {
@@ -46,11 +53,7 @@ export default {
       this.map = L.map("map").setView([37.505, -3.09], 5);
       this.addBaseMap();
       this.addInfoControl();
-      this.addFeatures(
-        this.regionalData.cases,
-        this.regionalData.hospitalized,
-        this.regionalData.deaths
-      );
+      this.addFeatures(this.regionalData.cases);
     },
     addBaseMap() {
       var CartoDB_DarkMatter = L.tileLayer(
@@ -73,13 +76,9 @@ export default {
       };
       this.infoControl.addTo(this.map);
     },
-    addFeatures(casesData, hospitalizedData, deathsData) {
+    addFeatures(casesData) {
       let self = this;
       for (let region of SPANISH_REGIONS_GEOJSON.features) {
-        var regionCasesRow = casesData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-
         //Filter last week cases for specific region
         var lastWeekEnd = addDays(
           new Date(casesData.data[casesData.data.length - 2].fecha),
@@ -95,65 +94,31 @@ export default {
             isBefore(new Date(row.fecha), lastWeekEnd)
         );
         console.log(regionCasesLastWeek);
-        var casesSum = 0;
-        for (let day of regionCasesLastWeek) {
-          casesSum += parseInt(day.num_casos);
-        }
-        console.log(`Casos ultima semana en region: ${casesSum}`);
-        
-        var regionDeathsRow = deathsData.data.find(
-          row => row.cod_ine === region.properties.codigo
-        );
-        var regionHospitalizedRow = hospitalizedData.data.find(
-          row => row.cod_ine === region.properties.codigo
+        //Filter two weeks ago
+        var twoWeeksAgoIni = subDays(lastWeekIni, 7);
+        var twoWeeksAgoEnd = addDays(lastWeekIni, 1);
+        var regionCasesTwoWeeksAgo = regionCases.filter(
+          row =>
+            isAfter(new Date(row.fecha), twoWeeksAgoIni) &&
+            isBefore(new Date(row.fecha), twoWeeksAgoEnd)
         );
 
-        var dates = Object.keys(regionCasesRow);
+        var lastWeekCasesSum = 0;
+        for (let day of regionCasesLastWeek) {
+          lastWeekCasesSum += parseInt(day.num_casos);
+        }
+
+        var twoWeeksAgoCasesSum = 0;
+        for (let day of regionCasesTwoWeeksAgo) {
+          twoWeeksAgoCasesSum += parseInt(day.num_casos);
+        }
+
         region.properties.cases = {
-          date: format(
-            new Date(dates[Object.keys(regionCasesRow).length - 1]),
-            "d/M/Y"
-          ),
-          today:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionCasesRow[
-              Object.keys(regionCasesRow)[
-                Object.keys(regionCasesRow).length - 2
-              ]
-            ]
-        };
-        region.properties.hospitalized = {
-          today:
-            regionHospitalizedRow[
-              Object.keys(regionHospitalizedRow)[
-                Object.keys(regionHospitalizedRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionHospitalizedRow[
-              Object.keys(regionHospitalizedRow)[
-                Object.keys(regionHospitalizedRow).length - 2
-              ]
-            ]
-        };
-        region.properties.deaths = {
-          today:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 1
-              ]
-            ],
-          yesterday:
-            regionDeathsRow[
-              Object.keys(regionDeathsRow)[
-                Object.keys(regionDeathsRow).length - 2
-              ]
-            ]
+          date: `Semana ${getDate(lastWeekIni)}/${getMonth(
+            lastWeekIni
+          )}-${getDate(lastWeekEnd)}/${getMonth(lastWeekEnd)}`,
+          today: lastWeekCasesSum,
+          yesterday: twoWeeksAgoCasesSum
         };
         self.geoJsonData.features.push(region);
       }
