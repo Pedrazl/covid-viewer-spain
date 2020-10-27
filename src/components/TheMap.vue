@@ -16,9 +16,7 @@ import {
   subDays,
   isAfter,
   isBefore,
-  addDays,
-  getDate,
-  getMonth
+  addDays
 } from "date-fns";
 import { mapState } from "vuex";
 
@@ -114,9 +112,8 @@ export default {
         }
 
         region.properties.cases = {
-          date: `Semana ${getDate(lastWeekIni)}/${getMonth(
-            lastWeekIni
-          )}-${getDate(lastWeekEnd)}/${getMonth(lastWeekEnd)}`,
+          date: `${lastWeekIni.toLocaleDateString()
+}-${lastWeekEnd.toLocaleDateString()}`,
           today: lastWeekCasesSum,
           yesterday: twoWeeksAgoCasesSum
         };
