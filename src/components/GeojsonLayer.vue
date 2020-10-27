@@ -119,7 +119,7 @@ export default {
             props.cases.date
           }</label>)<div class="info__label blue"><label>${
             props.cases.today
-          } casos (pcr) (+${
+          } casos (pcr) (${
             casesDailyStats.diff
           })</label></div>
           <div style="display:flex">

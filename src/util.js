@@ -4,7 +4,7 @@ export const calculateTrend = (present, past) => {
 
 export const getDailyStats = (today, yesterday) => {
   return {
-    diff: today - yesterday,
-    trend: calculateTrend(today, yesterday)
+    diff: yesterday - today,
+    trend: ((yesterday - today) * 100 / today).toFixed(1)
   };
 };
